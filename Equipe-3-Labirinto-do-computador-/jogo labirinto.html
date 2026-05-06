@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Labirinto do Computador</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800&family=Fredoka+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="stars"></div>
+  <div id="container">
+    <h1>🧠 Labirinto do Computador</h1>
+    <div id="game">
+      <canvas id="canvas" width="900" height="600"></canvas>
+      <div id="ui">
+        <div id="challengeMenu" class="card">
+          <h3>🎯 Dificuldade</h3>
+          <button class="btn-diff easy" onclick="startGame('Fácil')">Fácil</button>
+          <button class="btn-diff medium" onclick="startGame('Médio')">Médio</button>
+          <button class="btn-diff hard" onclick="startGame('Difícil')">Difícil</button>
+        </div>
+        <div class="card card--progress">
+          <h2 id="diffLabel">Modo: -</h2>
+          <p id="fase">Fase: -</p>
+          <div id="scoreBox">⭐ Pontos: <span id="score">0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="quizModal" class="modal">
+    <div class="modal-content">
+      <h2 id="quizTitle">🧩 Desafio</h2>
+      <div id="quizQuestion" style="margin:20px 0; font-weight:800;"></div>
+      <div id="quizOptions"></div>
+      <div id="quizFeedback" style="display:none; padding:10px; border-radius:10px; margin-top:10px;"></div>
+      <button id="quizSubmit" class="btn-quiz" onclick="validateAnswer()">✅ Responder!</button>
+    </div>
+  </div>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>

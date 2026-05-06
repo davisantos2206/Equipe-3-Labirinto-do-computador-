@@ -1,0 +1,69 @@
+{
+  "mapas": {
+    "Fácil": [
+      [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],
+        [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
+        [1,0,1,0,9,0,1,0,1,0,1,0,1,0,1],
+        [1,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+        [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+      ]
+    ],
+    "Médio": [
+      [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,1,0,0,0,0,0,1,0,1],
+        [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
+        [1,0,1,0,0,0,0,0,1,0,1,0,1,0,1],
+        [1,0,1,1,1,1,1,0,1,0,1,1,1,0,1],
+        [1,0,1,0,9,0,1,0,0,0,1,0,0,0,1],
+        [1,0,1,0,0,0,1,0,1,1,1,0,1,1,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+      ]
+    ],
+    "Difícil": [
+      [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,0,1,0,1,1,1,1,1,1,1,0,1],
+        [1,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
+        [1,0,1,1,1,0,1,0,9,0,1,0,1,1,1],
+        [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
+        [1,0,1,0,1,1,1,1,1,1,1,0,1,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+      ]
+    ]
+  },
+  "quizzes": {
+    "0": [
+      {
+        "question": "Qual componente é conhecido como o 'cérebro' do computador?",
+        "options": ["Monitor", "CPU (Processador)", "Teclado", "Mouse"],
+        "correct": 1,
+        "explanation": "A CPU processa todas as informações e comandos do sistema! 🧠"
+      }
+    ],
+    "1": [
+      {
+        "question": "Onde os arquivos ficam guardados permanentemente, mesmo se o PC desligar?",
+        "options": ["Memória RAM", "Placa de Vídeo", "HD ou SSD", "Fonte de Energia"],
+        "correct": 2,
+        "explanation": "O HD e o SSD são memórias de armazenamento em massa que não apagam sem energia! 💾"
+      }
+    ],
+    "2": [
+      {
+        "question": "Para que serve a Memória RAM?",
+        "options": ["Para guardar fotos", "Para resfriar o computador", "Para carregar o que está sendo usado agora", "Para ligar o monitor"],
+        "correct": 2,
+        "explanation": "A RAM é a memória de curto prazo usada para rodar programas abertos! 💾"
+      }
+    ]
+  }
+}
