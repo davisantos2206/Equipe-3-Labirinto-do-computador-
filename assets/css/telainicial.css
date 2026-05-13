@@ -1,0 +1,441 @@
+
+:root {
+    --green: #06D6A0;
+    --yellow: #FFD93D;
+    --pink: #FF4D8D;
+    --purple: #9B5DE5;
+    --dark: #0D0821;
+  }
+  
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+  }
+  
+  body{
+    font-family:'Nunito', sans-serif;
+    background:var(--dark);
+    color:white;
+    min-height:100vh;
+    overflow:hidden;
+  }
+  
+  /* ESTRELAS */
+  
+  #stars{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+  
+  .star{
+    position:absolute;
+    background:white;
+    border-radius:50%;
+    animation:twinkle var(--d,2s) ease-in-out infinite var(--delay,0s);
+  }
+  
+  @keyframes twinkle{
+    0%,100%{
+      opacity:.2;
+      transform:scale(1);
+    }
+  
+    50%{
+      opacity:1;
+      transform:scale(1.4);
+    }
+  }
+  
+  /* HOME */
+  
+  #home{
+    position:relative;
+    z-index:1;
+  
+    min-height:100vh;
+  
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  
+    padding:20px;
+  }
+  
+  /* LOGO */
+  
+  .logo-box{
+    text-align:center;
+    margin-bottom:40px;
+  }
+  
+  .logo-box h1{
+    font-family:'Fredoka One', cursive;
+    font-size:3rem;
+    color:var(--yellow);
+  
+    text-shadow:
+      0 0 20px rgba(255,217,61,0.4),
+      0 0 50px rgba(255,217,61,0.2);
+  
+    margin-bottom:16px;
+  }
+  
+  .subtitle{
+    max-width:700px;
+    color:rgba(255,255,255,0.75);
+    font-size:1.1rem;
+    line-height:1.5;
+  }
+  
+  /* CARD MENU */
+  
+  .menu-card{
+    width:100%;
+    max-width:420px;
+  
+    background:rgba(255,255,255,0.06);
+  
+    border:1px solid rgba(255,255,255,0.1);
+  
+    backdrop-filter:blur(10px);
+  
+    border-radius:24px;
+  
+    padding:28px;
+  
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  
+    box-shadow:
+      0 0 30px rgba(155,93,229,0.2);
+  }
+  
+  /* BOTÕES */
+  
+  .menu-btn{
+    border:none;
+    border-radius:16px;
+  
+    padding:18px;
+  
+    color:white;
+  
+    font-size:1.1rem;
+    font-family:'Fredoka One';
+  
+    cursor:pointer;
+  
+    transition:.2s;
+  }
+  
+  .menu-btn:hover{
+    transform:translateY(-3px) scale(1.02);
+  }
+  
+  .menu-btn:active{
+    transform:translateY(2px);
+  }
+  
+  .play{
+    background:var(--green);
+    box-shadow:0 6px 0 #04946f;
+  }
+  
+  .tutorial{
+    background:var(--yellow);
+    color:#1A1033;
+    box-shadow:0 6px 0 #c3a22d;
+  }
+  
+  .accessibility{
+    background:var(--pink);
+    box-shadow:0 6px 0 #b63864;
+  }
+  
+  .options{
+    background:var(--purple);
+    box-shadow:0 6px 0 #7640bb;
+  }
+  
+  /* MODAIS */
+  
+  .modal{
+    display:none;
+  
+    position:fixed;
+    inset:0;
+  
+    background:rgba(0,0,0,0.88);
+  
+    z-index:1000;
+  
+    align-items:center;
+    justify-content:center;
+  
+    padding:20px;
+  }
+  
+  .modal-content{
+    width:100%;
+    max-width:450px;
+  
+    background:#1E1147;
+  
+    border-radius:24px;
+  
+    padding:30px;
+  
+    border:2px solid var(--purple);
+  
+    box-shadow:0 0 40px rgba(155,93,229,0.4);
+  
+    text-align:center;
+  }
+  
+  .modal-content h2{
+    font-family:'Fredoka One';
+    color:var(--yellow);
+  
+    margin-bottom:18px;
+  }
+  
+  .modal-text{
+    line-height:1.6;
+    color:rgba(255,255,255,0.8);
+  }
+  
+  .tutorial-list{
+    list-style:none;
+    margin:20px 0;
+  
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  
+    text-align:left;
+  }
+  
+  .tutorial-list li{
+    background:rgba(255,255,255,0.06);
+    padding:12px;
+    border-radius:10px;
+  }
+  
+  /* BOTÕES */
+  
+  .btn-close,
+  .btn-access{
+    border:none;
+  
+    padding:12px 20px;
+  
+    border-radius:14px;
+  
+    cursor:pointer;
+  
+    font-family:'Fredoka One';
+  
+    color:white;
+  
+    margin-top:12px;
+  
+    transition:.2s;
+  }
+  
+  .btn-close{
+    background:var(--purple);
+  }
+  
+  .btn-access{
+    width:100%;
+    background:var(--green);
+  }
+  
+  /* OPÇÕES */
+  
+  .option-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  
+    margin:18px 0;
+  
+    text-align:left;
+  }
+  
+  .option-group label{
+    font-weight:800;
+    color:var(--yellow);
+  }
+  
+  /* ACESSIBILIDADE */
+  
+  .high-contrast{
+    background:black;
+    color:yellow;
+  }
+  
+  .high-contrast .menu-card,
+  .high-contrast .modal-content{
+    background:black;
+    border-color:yellow;
+  }
+  
+  .large-font{
+    font-size:18px;
+  }
+  
+  /* RESPONSIVO */
+  
+  @media(max-width:768px){
+  
+    .logo-box h1{
+      font-size:2.2rem;
+    }
+  
+    .subtitle{
+      font-size:1rem;
+    }
+  
+  }
+
+  /* TUTORIAL */
+
+.tutorial-content{
+  max-width:700px;
+}
+
+.tutorial-intro{
+  margin:15px 0 25px;
+  line-height:1.6;
+  color:rgba(255,255,255,0.8);
+}
+
+.tutorial-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-bottom:25px;
+}
+
+.tutorial-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:18px;
+  text-align:left;
+  transition:.2s;
+}
+
+.tutorial-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 0 20px rgba(155,93,229,0.25);
+}
+
+.tutorial-icon{
+  font-size:2rem;
+  display:block;
+  margin-bottom:10px;
+}
+
+.tutorial-card h3{
+  color:var(--yellow);
+  margin-bottom:8px;
+  font-family:'Fredoka One';
+  font-size:1rem;
+}
+
+.tutorial-card p{
+  font-size:.92rem;
+  line-height:1.5;
+  color:rgba(255,255,255,0.75);
+}
+
+.tutorial-controls{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  margin-bottom:24px;
+}
+
+.key-row{
+  display:flex;
+  gap:8px;
+}
+
+.key-group{
+  display:flex;
+  justify-content:center;
+}
+
+.key{
+  width:50px;
+  height:50px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(155,93,229,0.25);
+
+  border:1px solid rgba(155,93,229,0.5);
+
+  border-radius:12px;
+
+  font-family:'Fredoka One';
+  font-size:1.1rem;
+
+  box-shadow:0 0 15px rgba(155,93,229,0.2);
+}
+
+/* BOTÃO ENTENDI */
+
+#closeTutorial{
+  padding:14px 34px;
+
+  border:none;
+  border-radius:30px;
+
+  background:linear-gradient(
+    135deg,
+    var(--green),
+    #04b989
+  );
+
+  color:white;
+
+  font-family:'Fredoka One';
+  font-size:1rem;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+  box-shadow:
+    0 6px 0 #038764,
+    0 0 20px rgba(6,214,160,0.3);
+
+  margin-top:10px;
+}
+
+#closeTutorial:hover{
+  transform:translateY(-3px) scale(1.03);
+
+  box-shadow:
+    0 8px 0 #038764,
+    0 0 30px rgba(6,214,160,0.5);
+}
+
+#closeTutorial:active{
+  transform:translateY(3px);
+
+  box-shadow:
+    0 2px 0 #038764,
+    0 0 10px rgba(6,214,160,0.2);
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Labirinto da Computação</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/telainicial.css">
+</head>
+<body>
+
+  <!-- ESTRELAS -->
+  <div id="stars"></div>
+
+  <!-- TELA INICIAL -->
+  <main id="home">
+
+    <div class="logo-box">
+      <h1>LABIRINTO DA COMPUTAÇÃO</h1>
+      <p class="subtitle">
+        Explore desafios, responda perguntas e encontre a saída do conhecimento!
+      </p>
+    </div>
+
+    <section class="menu-card">
+
+      <button class="menu-btn play">
+        ▶ Jogar
+      </button>
+
+      <button class="menu-btn tutorial">
+         Tutorial
+      </button>
+
+      <button class="menu-btn accessibility">
+         Acessibilidade
+      </button>
+
+      <button class="menu-btn options">
+         Opções
+      </button>
+
+    </section>
+
+  </main>
+
+  <div id="tutorialModal" class="modal">
+
+    <div class="modal-content tutorial-content">
+  
+      <h2>📘 Tutorial do Labirinto</h2>
+  
+      <p class="tutorial-intro">
+        Complete desafios de computação, encontre a saída do labirinto
+        e conquiste a maior pontuação possível.
+      </p>
+  
+      <div class="tutorial-grid">
+  
+        <div class="tutorial-card">
+          <span class="tutorial-icon">🎮</span>
+          <h3>Movimentação</h3>
+          <p>
+            Use as teclas <b>WASD</b> ou as
+            <b>setas do teclado</b> para mover o personagem.
+          </p>
+        </div>
+  
+        <div class="tutorial-card">
+          <span class="tutorial-icon">🧠</span>
+          <h3>Desafios</h3>
+          <p>
+            Durante o percurso aparecerão perguntas relacionadas à computação.
+          </p>
+        </div>
+  
+        <div class="tutorial-card">
+          <span class="tutorial-icon">⭐</span>
+          <h3>Pontuação</h3>
+          <p>
+            Quanto mais respostas corretas,
+            maior será sua pontuação final.
+          </p>
+        </div>
+  
+        <div class="tutorial-card">
+          <span class="tutorial-icon">🏆</span>
+          <h3>Objetivo</h3>
+          <p>
+            Encontre a saída do labirinto antes de terminar os desafios.
+          </p>
+        </div>
+  
+      </div>
+  
+      <div class="tutorial-controls">
+  
+        <div class="key-group">
+          <span class="key">W</span>
+        </div>
+  
+        <div class="key-row">
+          <span class="key">A</span>
+          <span class="key">S</span>
+          <span class="key">D</span>
+        </div>
+  
+      </div>
+  
+      <button class="btn-quiz" id="closeTutorial">
+        🚀 Entendi!
+      </button>
+  
+    </div>
+  
+  </div>
+  
+  <!-- MODAL ACESSIBILIDADE -->
+  <div class="modal" id="accessibilityModal">
+    <div class="modal-content">
+      <h2>Acessibilidade</h2>
+
+      <div class="accessibility-options">
+
+        <button class="btn-access" id="contrastBtn">
+          Alto Contraste
+        </button>
+
+        <button class="btn-access" id="fontBtn">
+          Aumentar Fonte
+        </button>
+
+      </div>
+
+      <button class="btn-close">Fechar</button>
+    </div>
+  </div>
+
+  <!-- MODAL OPÇÕES -->
+  <div class="modal" id="optionsModal">
+    <div class="modal-content">
+      <h2>Opções</h2>
+
+      <div class="option-group">
+        <label>Música</label>
+        <input type="range" min="0" max="100" value="80">
+      </div>
+
+      <div class="option-group">
+        <label>Efeitos Sonoros</label>
+        <input type="range" min="0" max="100" value="70">
+      </div>
+
+      <button class="btn-close">Fechar</button>
+    </div>
+  </div>
+
+  <script src="assets/js/telainicial.js"></script>
+
+</body>
+</html>
