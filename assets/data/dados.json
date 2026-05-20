@@ -1,0 +1,171 @@
+{
+    "mapas": {
+      "Fácil": [
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],
+          [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
+          [1,0,1,0,9,0,0,0,1,0,1,0,1,0,1],
+          [1,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+          [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ],
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
+          [1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],
+          [1,0,1,0,0,0,1,0,0,0,0,0,1,0,1],
+          [1,0,1,0,1,1,1,1,1,1,1,0,1,0,1],
+          [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
+          [1,0,1,1,1,1,1,1,1,0,1,0,1,0,1],
+          [1,0,0,0,0,0,0,0,9,0,1,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ],
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+          [1,0,1,0,1,0,1,1,1,1,1,1,1,0,1],
+          [1,0,1,0,1,0,0,0,0,0,0,0,1,0,1],
+          [1,0,1,0,1,1,1,1,1,1,1,0,1,0,1],
+          [1,0,1,0,0,0,0,0,9,0,1,0,1,0,1],
+          [1,0,1,1,1,1,1,1,1,1,1,0,1,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,1,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      ],
+      "Médio": [
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,1,0,0,0,0,0,1,0,1],
+          [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
+          [1,0,1,0,0,0,0,0,1,0,1,0,1,0,1],
+          [1,0,1,1,1,1,1,0,1,0,1,1,1,0,1],
+          [1,0,1,0,9,0,1,0,0,0,1,0,0,0,1],
+          [1,0,1,0,0,0,1,0,1,1,1,0,1,1,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ],
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,1,0,0,0,1,0,0,0,0,0,1,0,1],
+          [1,0,1,0,1,0,1,0,1,1,1,0,1,0,1],
+          [1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
+          [1,1,1,1,1,1,1,0,1,0,1,1,1,0,1],
+          [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
+          [1,0,1,1,1,0,1,0,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,0,0,0,0,9,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ],
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
+          [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+          [1,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,1,0,1],
+          [1,0,1,1,1,1,1,1,1,1,1,0,1,0,1],
+          [1,9,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      ],
+      "Difícil": [
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,0,1,0,1,1,1,1,1,1,1,0,1],
+          [1,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
+          [1,0,1,1,1,0,1,0,9,0,1,0,1,1,1],
+          [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
+          [1,0,1,0,1,1,1,1,1,1,1,0,1,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ],
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,1,0,0,0,0,0,1],
+          [1,1,1,0,1,0,1,0,1,0,1,1,1,0,1],
+          [1,0,0,0,0,0,1,0,0,0,1,0,0,0,1],
+          [1,1,1,1,1,1,1,0,1,1,1,0,1,1,1],
+          [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+          [1,0,1,1,1,1,1,1,1,0,1,1,1,1,1],
+          [1,9,0,0,0,0,0,0,1,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ],
+        [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,0,0,0,0,1,9,1],
+          [1,0,1,0,1,0,1,1,1,1,1,0,1,0,1],
+          [1,0,1,0,1,0,1,0,0,0,1,0,1,0,1],
+          [1,0,1,0,1,0,1,0,1,1,1,0,1,0,1],
+          [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
+          [1,0,1,1,1,1,1,0,1,0,1,1,1,0,1],
+          [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      ]
+    },
+    "quizzes": {
+      "Fácil": [
+        {
+          "question": "Qual peça é considerada o 'cérebro' do computador?",
+          "options": ["Monitor", "Processador (CPU)", "Teclado", "Mouse"],
+          "correct": 1,
+          "explanation": "A CPU (Processador) pensa e processa todos os comandos do computador! 🧠"
+        },
+        {
+          "question": "Onde seus arquivos, fotos e jogos ficam guardados para não sumirem?",
+          "options": ["Memória RAM", "Placa de Vídeo", "HD ou SSD", "Fonte"],
+          "correct": 2,
+          "explanation": "O HD e o SSD são como 'baús' que guardam tudo, mesmo sem energia na tomada! 💾"
+        },
+        {
+          "question": "Como o computador mostra as imagens e vídeos para você?",
+          "options": ["Pelo Mouse", "Pelo Monitor (Tela)", "Pelo HD", "Pela Placa-Mãe"],
+          "correct": 1,
+          "explanation": "O monitor é a tela que exibe todos os resultados visuais do que a CPU processa! 📺"
+        }
+      ],
+      "Médio": [
+        {
+          "question": "O que a Memória RAM faz no computador?",
+          "options": ["Guarda fotos para sempre", "Resfria as peças", "Guarda os dados dos programas que estão abertos agora", "Liga a tela"],
+          "correct": 2,
+          "explanation": "A RAM é a memória de 'curto prazo', super rápida, mas apaga tudo se o PC desligar! ⚡"
+        },
+        {
+          "question": "Qual componente puxa energia da tomada e distribui para as outras peças?",
+          "options": ["Placa-Mãe", "Fonte de Alimentação", "Cooler", "Disco Rígido"],
+          "correct": 1,
+          "explanation": "A Fonte de Alimentação envia a energia na medida certa para não queimar o PC! 🔌"
+        },
+        {
+          "question": "Qual placa é responsável por conectar TODAS as peças do computador?",
+          "options": ["Placa de Vídeo", "Placa de Som", "Placa de Rede", "Placa-Mãe"],
+          "correct": 3,
+          "explanation": "A Placa-Mãe é a grande 'cidade' onde o Processador, a Memória e o HD se conectam! 🏙️"
+        }
+      ],
+      "Difícil": [
+        {
+          "question": "Por que um SSD é considerado muito melhor que um HD tradicional?",
+          "options": ["Porque é mais pesado", "Porque não tem peças móveis (mecânicas) e é muito mais rápido", "Porque tem mais gigabytes", "Porque brilha no escuro"],
+          "correct": 1,
+          "explanation": "O SSD usa memória flash (como um pendrive gigante), lendo arquivos quase instantaneamente! 🚀"
+        },
+        {
+          "question": "O que acontece com os dados da Memória RAM quando a luz acaba?",
+          "options": ["Ficam salvos", "Vão para o HD", "São apagados imediatamente (memória volátil)", "Vão para a nuvem"],
+          "correct": 2,
+          "explanation": "A RAM é uma memória volátil. Sem energia elétrica, ela esquece tudo o que estava fazendo! 💨"
+        },
+        {
+          "question": "A velocidade de um Processador (CPU) geralmente é medida em quê?",
+          "options": ["Megabytes (MB)", "Gigahertz (GHz)", "Volts (V)", "Watts (W)"],
+          "correct": 1,
+          "explanation": "O 'Clock' do processador é medido em GHz, o que indica bilhões de operações por segundo! ⏱️"
+        }
+      ]
+    }
+  }
