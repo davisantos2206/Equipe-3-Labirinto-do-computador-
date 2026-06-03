@@ -8,13 +8,36 @@
 </head>
 <body>
   <div id="stars"></div>
+
+  <div id="loginScreen" class="modal" style="display: flex; z-index: 200;">
+    <div class="modal-content" style="border-color: #7209B7; padding: 40px;">
+      <h1 style="font-size: 2.2rem; color: #4CC9F0; margin-top: 0;">🖥️ Acesso ao Sistema</h1>
+      <p style="font-size: 1.1rem; margin-bottom: 25px;">Identifique-se para entrar no Labirinto.</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" style="display: flex; flex-direction: column; gap: 15px;">
+        <input type="text" id="playerRA" placeholder="Nome ou RA (Registro)" required class="login-input">
+        <input type="text" id="playerClass" placeholder="Turma (Ex: 4º A)" required class="login-input">
+        <input type="number" id="playerAge" placeholder="Idade (Anos)" required min="5" max="99" class="login-input">
+
+        <button type="submit" class="btn-quiz" style="background: #7209B7; font-size: 1.2rem; margin-top: 10px;">
+          🚀 Iniciar Sessão
+        </button>
+      </form>
+    </div>
+  </div>
   
-  <div id="container">
+  <div id="container" style="display: none;">
     <h1>🧠 Labirinto do Computador</h1>
     <div id="game">
       <canvas id="canvas" width="900" height="600"></canvas>
       
       <div id="ui">
+        <div class="card" style="border: 2px solid #4CC9F0;">
+          <h3 style="color: #4CC9F0; margin-bottom: 5px;">👤 Operador</h3>
+          <p id="playerNameDisplay" style="font-weight: 800; font-size: 1.1rem; margin: 0;">---</p>
+          <p id="playerClassDisplay" style="font-size: 0.9rem; margin: 0; color: #666;">---</p>
+        </div>
+
         <div id="challengeMenu" class="card">
           <h3>🎯 Dificuldade</h3>
           <button class="btn-diff easy" onclick="startGame('Fácil')">Fácil</button>
@@ -54,7 +77,7 @@
       </div>
 
       <button class="btn-quiz" onclick="returnToMenu()" style="background: #FFD700; color: #333;">
-        🎮 Jogar Novamente
+        🎮 Voltar ao Menu
       </button>
     </div>
   </div>

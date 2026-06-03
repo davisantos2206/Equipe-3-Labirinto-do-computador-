@@ -67,6 +67,31 @@ canvas {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
+/* --- ESTILOS DO LOGIN --- */
+.login-input {
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #4CC9F0;
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    outline: none;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.login-input:focus {
+    border-color: #7209B7;
+    box-shadow: 0 0 15px rgba(114, 9, 183, 0.4);
+}
+
+.login-input::placeholder {
+    color: #999;
+    font-weight: normal;
+}
+
 /* --- UI CARDS --- */
 #ui {
     display: flex;

@@ -1,5 +1,5 @@
 /**
- * LABIRINTO DO COMPUTADOR - Script Core 100% Completo
+ * LABIRINTO DO COMPUTADOR - Script Core 100% Completo (Com Login)
  */
 
 const canvas = document.getElementById("canvas");
@@ -19,6 +19,7 @@ const sfx = {
 };
 Object.values(sfx).forEach(som => som.volume = 0.3);
 
+// Variáveis Globais de Estado
 let gameData = null;
 let currentLevel = 0;
 let player = { x: 0, y: 0 };
@@ -28,10 +29,13 @@ let currentDiff = "Médio";
 let mapasAtuais = [];
 let isPaused = true; 
 
-let bestScore = localStorage.getItem("labirinto_bestScore") || 0;
-const bestScoreEl = document.getElementById("bestScore");
-if (bestScoreEl) bestScoreEl.textContent = bestScore;
+// Sistema de Autenticação e Recordes
+let currentUser = null; 
+let storageKey = "labirinto_bestScore_default"; 
+let bestScore = 0;
 
+// Elementos HTML
+const bestScoreEl = document.getElementById("bestScore");
 const faseEl = document.getElementById("fase");
 const scoreEl = document.getElementById("score");
 const modal = document.getElementById("quizModal");
@@ -39,26 +43,56 @@ const victoryModal = document.getElementById("victoryModal");
 const quizSubmitBtn = document.getElementById("quizSubmit");
 
 /**
- * Inicialização
+ * 1. Função de Login e Identificação
+ */
+window.handleLogin = function(e) {
+    e.preventDefault(); // Impede recarregamento da página
+    
+    const ra = document.getElementById("playerRA").value.trim().toUpperCase();
+    const turma = document.getElementById("playerClass").value.trim();
+    const idade = parseInt(document.getElementById("playerAge").value);
+
+    // Validação de Idade
+    if (idade < 6) {
+        alert("Aviso: O labirinto pode ser muito difícil. Peça ajuda ao professor(a) se precisar!");
+    }
+
+    currentUser = { ra: ra, turma: turma, idade: idade };
+    storageKey = `labirinto_recorde_${ra.replace(/\s+/g, '')}`; // Chave única por RA
+    
+    // Carrega o recorde daquele RA específico
+    bestScore = localStorage.getItem(storageKey) || 0;
+    if (bestScoreEl) bestScoreEl.textContent = bestScore;
+
+    // Atualiza Painel do Jogador
+    document.getElementById("playerNameDisplay").textContent = ra;
+    document.getElementById("playerClassDisplay").textContent = `Turma: ${turma}`;
+
+    // Transição de Telas
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("container").style.display = "flex";
+
+    // Inicia o loop de renderização após o login
+    requestAnimationFrame(draw);
+};
+
+/**
+ * 2. Carrega Dados Básicos (JSON)
  */
 async function init() {
     try {
         const res = await fetch('assets/data/dados.json');
         if (!res.ok) throw new Error("Erro de rede.");
         gameData = await res.json();
-        
-        // Limpa a tela inicial para preto
-        ctx.fillStyle = "#0D0821";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        requestAnimationFrame(draw);
+        console.log("✅ JSON Carregado! Aguardando o Login...");
     } catch (e) {
-        console.error("Erro ao carregar:", e);
+        console.error("❌ Erro ao carregar:", e);
+        alert("Erro ao carregar o JSON. Tem certeza que está usando o Live Server?");
     }
 }
 
 /**
- * Inicia a partida
+ * 3. Inicia e Reseta a Partida
  */
 window.startGame = function(diff) {
     if (!gameData) return;
@@ -84,30 +118,24 @@ function loadLevel(level) {
     if (faseEl) faseEl.textContent = `Fase: ${currentLevel + 1}/${mapasAtuais.length}`;
 }
 
-/**
- * Reset e Volta ao Menu
- */
 window.returnToMenu = function() {
     victoryModal.style.display = "none";
     isPaused = true;
     
-    // Restaura o menu
     const menu = document.getElementById("challengeMenu");
     menu.style.opacity = "1";
     menu.style.pointerEvents = "auto";
     
-    // Reseta textos da UI
     document.getElementById("diffLabel").textContent = "Modo: -";
     if (faseEl) faseEl.textContent = "Fase: -";
     if (scoreEl) scoreEl.textContent = "0";
     
-    // Limpa a tela
     ctx.fillStyle = "#0D0821";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
 
 /**
- * Lógica de Movimento
+ * 4. Lógica de Movimento e Colisão
  */
 function move(dx, dy) {
     if (isPaused || !mapasAtuais || !mapasAtuais[currentLevel]) return;
@@ -146,7 +174,7 @@ function move(dx, dy) {
 }
 
 /**
- * Lógica de Quiz
+ * 5. Lógica de Quiz e Pontuação
  */
 function showQuiz(level) {
     const q = gameData.quizzes[currentDiff][level]; 
@@ -191,7 +219,7 @@ window.validateAnswer = function() {
         
         if (totalScore > bestScore) {
             bestScore = totalScore;
-            localStorage.setItem("labirinto_bestScore", bestScore);
+            localStorage.setItem(storageKey, bestScore); // Salva no banco de dados único do RA
             if (bestScoreEl) bestScoreEl.textContent = bestScore;
         }
     } else {
@@ -211,48 +239,52 @@ window.validateAnswer = function() {
 };
 
 /**
- * Motor de Renderização Gráfica
+ * 6. Motor Gráfico (Loop Contínuo)
  */
 function draw() {
-    if (!isPaused && mapasAtuais && mapasAtuais[currentLevel]) {
+    // Só renderiza se a tela do jogo estiver visível
+    if (document.getElementById("container").style.display !== "none") {
         ctx.fillStyle = "#0D0821";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const map = mapasAtuais[currentLevel];
-        const config = configs[currentDiff];
+        if (!isPaused && mapasAtuais && mapasAtuais[currentLevel]) {
+            const map = mapasAtuais[currentLevel];
+            const config = configs[currentDiff];
 
-        for (let r = 0; r < map.length; r++) {
-            for (let c = 0; c < map[r].length; c++) {
-                const x = c * tileSize;
-                const y = r * tileSize;
+            for (let r = 0; r < map.length; r++) {
+                for (let c = 0; c < map[r].length; c++) {
+                    const x = c * tileSize;
+                    const y = r * tileSize;
 
-                if (map[r][c] === 1) {
-                    ctx.fillStyle = config.wallColor;
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = config.wallColor;
-                    ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
-                    ctx.shadowBlur = 0;
-                } else if (map[r][c] === 9) {
-                    const pulse = Math.sin(Date.now() / 200) * 5;
-                    ctx.font = `${30 + pulse}px Arial`;
-                    ctx.fillText("💾", x + 12, y + 42);
+                    if (map[r][c] === 1) {
+                        ctx.fillStyle = config.wallColor;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = config.wallColor;
+                        ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+                        ctx.shadowBlur = 0;
+                    } else if (map[r][c] === 9) {
+                        const pulse = Math.sin(Date.now() / 200) * 5;
+                        ctx.font = `${30 + pulse}px Arial`;
+                        ctx.fillText("💾", x + 12, y + 42);
+                    }
                 }
             }
+            
+            ctx.font = "35px Arial";
+            ctx.fillText("🧒", player.x - 17, player.y + 12);
         }
-        
-        ctx.font = "35px Arial";
-        ctx.fillText("🧒", player.x - 17, player.y + 12);
     }
     
     requestAnimationFrame(draw);
 }
 
 /**
- * Teclado
+ * 7. Teclado
  */
 document.addEventListener("keydown", e => {
     if (isPaused) return; 
     
+    // Evita o scroll de tela com as setinhas
     if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
         e.preventDefault();
     }
@@ -264,4 +296,5 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowRight") move(s, 0);
 });
 
+// Inicialização de Dados
 init();
