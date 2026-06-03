@@ -40,9 +40,15 @@
 
         <div id="challengeMenu" class="card">
           <h3>🎯 Dificuldade</h3>
-          <button class="btn-diff easy" onclick="startGame('Fácil')">Fácil</button>
-          <button class="btn-diff medium" onclick="startGame('Médio')">Médio</button>
-          <button class="btn-diff hard" onclick="startGame('Difícil')">Difícil</button>
+          
+          <button id="btnResume" class="btn-diff" style="background: #4CC9F0; color: #0D0821; display: none;" onclick="resumeGame()">
+            ▶️ Continuar
+          </button>
+          <hr id="resumeLine" style="display: none; border-top: 2px dashed #4CC9F0; border-bottom: none; margin: 15px 0;">
+          
+          <button class="btn-diff easy" onclick="startGame('Fácil')">Novo: Fácil</button>
+          <button class="btn-diff medium" onclick="startGame('Médio')">Novo: Médio</button>
+          <button class="btn-diff hard" onclick="startGame('Difícil')">Novo: Difícil</button>
         </div>
         
         <div class="card card--progress">
