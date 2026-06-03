@@ -1,5 +1,5 @@
 /**
- * LABIRINTO DO COMPUTADOR - Script Core Final
+ * LABIRINTO DO COMPUTADOR - Script Core 100% Completo
  */
 
 const canvas = document.getElementById("canvas");
@@ -35,6 +35,7 @@ if (bestScoreEl) bestScoreEl.textContent = bestScore;
 const faseEl = document.getElementById("fase");
 const scoreEl = document.getElementById("score");
 const modal = document.getElementById("quizModal");
+const victoryModal = document.getElementById("victoryModal");
 const quizSubmitBtn = document.getElementById("quizSubmit");
 
 /**
@@ -45,22 +46,22 @@ async function init() {
         const res = await fetch('assets/data/dados.json');
         if (!res.ok) throw new Error("Erro de rede.");
         gameData = await res.json();
-        console.log("✅ JSON Carregado! Pronto para jogar.");
+        
+        // Limpa a tela inicial para preto
+        ctx.fillStyle = "#0D0821";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
         requestAnimationFrame(draw);
     } catch (e) {
-        console.error("❌ Erro ao carregar:", e);
-        alert("Erro ao carregar o JSON. Tem certeza que está usando o Live Server?");
+        console.error("Erro ao carregar:", e);
     }
 }
 
 /**
- * Inicia ou reinicia a dificuldade
+ * Inicia a partida
  */
 window.startGame = function(diff) {
-    if (!gameData) {
-        alert("Aguarde, os dados ainda estão carregando...");
-        return;
-    }
+    if (!gameData) return;
     
     currentDiff = diff;
     mapasAtuais = gameData.mapas[diff];
@@ -69,6 +70,7 @@ window.startGame = function(diff) {
     
     document.getElementById("diffLabel").textContent = `Modo: ${diff}`;
     document.getElementById("challengeMenu").style.opacity = "0.5"; 
+    document.getElementById("challengeMenu").style.pointerEvents = "none";
     
     loadLevel(0); 
 };
@@ -81,6 +83,28 @@ function loadLevel(level) {
     
     if (faseEl) faseEl.textContent = `Fase: ${currentLevel + 1}/${mapasAtuais.length}`;
 }
+
+/**
+ * Reset e Volta ao Menu
+ */
+window.returnToMenu = function() {
+    victoryModal.style.display = "none";
+    isPaused = true;
+    
+    // Restaura o menu
+    const menu = document.getElementById("challengeMenu");
+    menu.style.opacity = "1";
+    menu.style.pointerEvents = "auto";
+    
+    // Reseta textos da UI
+    document.getElementById("diffLabel").textContent = "Modo: -";
+    if (faseEl) faseEl.textContent = "Fase: -";
+    if (scoreEl) scoreEl.textContent = "0";
+    
+    // Limpa a tela
+    ctx.fillStyle = "#0D0821";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+};
 
 /**
  * Lógica de Movimento
@@ -125,7 +149,6 @@ function move(dx, dy) {
  * Lógica de Quiz
  */
 function showQuiz(level) {
-    // Agora busca pelas chaves "Fácil", "Médio", "Difícil" e depois pelo index da fase
     const q = gameData.quizzes[currentDiff][level]; 
     
     modal.style.display = "flex";
@@ -177,11 +200,12 @@ window.validateAnswer = function() {
 
     setTimeout(() => {
         modal.style.display = "none";
+        
         if (currentLevel < mapasAtuais.length - 1) {
             loadLevel(currentLevel + 1);
         } else {
-            alert(`🏆 Parabéns! Você completou o Labirinto!\nPontuação: ${totalScore}`);
-            location.reload();
+            document.getElementById("finalScore").textContent = totalScore;
+            victoryModal.style.display = "flex";
         }
     }, 3000);
 };
@@ -190,10 +214,10 @@ window.validateAnswer = function() {
  * Motor de Renderização Gráfica
  */
 function draw() {
-    ctx.fillStyle = "#0D0821";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     if (!isPaused && mapasAtuais && mapasAtuais[currentLevel]) {
+        ctx.fillStyle = "#0D0821";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         const map = mapasAtuais[currentLevel];
         const config = configs[currentDiff];
 
@@ -228,6 +252,10 @@ function draw() {
  */
 document.addEventListener("keydown", e => {
     if (isPaused) return; 
+    
+    if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+        e.preventDefault();
+    }
     
     const s = configs[currentDiff].speed;
     if (e.key === "ArrowUp") move(0, -s);
