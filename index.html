@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labirinto do Computador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="screen-grid" aria-hidden="true"></div>
+
+  <main class="app-shell" aria-labelledby="gameTitle">
+    <section id="startScreen" class="panel panel--login">
+      <div>
+        <p class="kicker">Sistema educativo</p>
+        <h1 id="gameTitle">Labirinto do Computador</h1>
+        <p class="lead">Conduza um pacote de dados por entrada, processamento, armazenamento e saída.</p>
+        <div class="start-visual" aria-hidden="true">
+          <div class="data-chip">010</div>
+          <span>Entrada</span>
+          <span>CPU</span>
+          <span>Memória</span>
+          <span>Saída</span>
+        </div>
+      </div>
+
+      <div class="start-card">
+        <span class="hud-label">Terminal pronto</span>
+        <strong>Pacote de dados aguardando envio</strong>
+        <p>Leve o pacote de dados pelos componentes do computador e responda aos desafios.</p>
+        <button id="playButton" class="primary-action primary-action--large" type="button">Jogar</button>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="game-layout" hidden>
+      <header class="topbar">
+        <div>
+          <p class="kicker">Fluxo da informação</p>
+          <h1>Labirinto do Computador</h1>
+        </div>
+        <div class="topbar-actions" aria-label="Controles do jogo">
+          <button id="tutorialButton" class="icon-button" type="button" title="Tutorial" aria-label="Abrir tutorial">?</button>
+          <button id="contrastButton" class="icon-button" type="button" title="Alto contraste" aria-label="Alternar alto contraste">◐</button>
+          <button id="fontButton" class="icon-button" type="button" title="Fonte maior" aria-label="Alternar fonte maior">A</button>
+          <button id="audioButton" class="icon-button" type="button" title="Som" aria-label="Ligar ou desligar som">♪</button>
+        </div>
+      </header>
+
+      <div class="play-area">
+        <div class="canvas-wrap">
+          <canvas id="canvas" width="960" height="640" role="img" aria-label="Labirinto em formato de placa de computador"></canvas>
+          <div class="mobile-pad" aria-label="Controles de movimento">
+            <button type="button" data-dir="up" aria-label="Mover para cima">▲</button>
+            <button type="button" data-dir="left" aria-label="Mover para esquerda">◀</button>
+            <button type="button" data-dir="down" aria-label="Mover para baixo">▼</button>
+            <button type="button" data-dir="right" aria-label="Mover para direita">▶</button>
+          </div>
+        </div>
+
+        <aside class="side-panel" aria-label="Informações da partida">
+          <section class="hud-block phase-card phase-card--primary">
+            <span class="hud-label">Fase atual</span>
+            <strong id="phaseNameLabel">Aguardando início</strong>
+            <span id="phaseGoalLabel">Escolha uma dificuldade para começar.</span>
+            <span id="playerNameDisplay" class="phase-mini">Componente: -</span>
+            <span id="playerClassDisplay" class="sr-only">Escolha uma dificuldade.</span>
+          </section>
+
+          <section class="hud-block">
+            <span class="hud-label">Dificuldade</span>
+            <div class="difficulty-grid">
+              <button class="difficulty easy" type="button" data-diff="Fácil">Fácil</button>
+              <button class="difficulty medium" type="button" data-diff="Médio">Médio</button>
+              <button class="difficulty hard" type="button" data-diff="Difícil">Difícil</button>
+            </div>
+            <button id="resumeButton" class="secondary-action" type="button" hidden>Continuar</button>
+          </section>
+
+          <section class="hud-block progress-block">
+            <span class="hud-label">Progresso</span>
+            <strong id="phaseLabel">Fase: -</strong>
+            <span id="componentLabel">Componente: -</span>
+            <div class="meter" aria-hidden="true"><span id="scoreMeter"></span></div>
+            <span>Pontos: <strong id="score">0</strong>/100</span>
+            <span>Recorde: <strong id="bestScore">0</strong>/100</span>
+            <span>Tempo: <strong id="timer">00:00</strong></span>
+          </section>
+
+          <section class="hud-block status-block">
+            <span class="hud-label">Estado</span>
+            <p id="statusText" aria-live="polite">Escolha uma dificuldade para começar.</p>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="tutorialModal" class="modal-card">
+    <h2>Tutorial</h2>
+    <div class="tutorial-grid">
+      <section class="tutorial-card tutorial-card--wide">
+        <span class="hud-label">Missão</span>
+        <p>Você é um pacote de dados viajando por dentro do computador. Chegue ao componente brilhante de cada fase.</p>
+        <div class="flow-preview" aria-label="Fluxo: Entrada, CPU, Memória e Saída">
+          <span>Entrada</span>
+          <span>CPU</span>
+          <span>Memória</span>
+          <span>Saída</span>
+        </div>
+      </section>
+
+      <section class="tutorial-card">
+        <span class="hud-label">Movimento</span>
+        <div class="key-cluster" aria-label="Setas do teclado">
+          <span></span>
+          <kbd>↑</kbd>
+          <span></span>
+          <kbd>←</kbd>
+          <kbd>↓</kbd>
+          <kbd>→</kbd>
+        </div>
+        <p>Use as setas para andar pelo labirinto. No celular, use os botões abaixo do labirinto.</p>
+      </section>
+
+      <section class="tutorial-card">
+        <span class="hud-label">Perguntas</span>
+        <div class="key-row" aria-label="Setas e Enter no quiz">
+          <kbd>↑</kbd>
+          <kbd>↓</kbd>
+          <kbd class="key-wide">Enter</kbd>
+        </div>
+        <p>No quiz, use as setas para escolher a alternativa e Enter para responder ou avançar.</p>
+      </section>
+
+      <section class="tutorial-card tutorial-card--wide">
+        <span class="hud-label">Tempo e resultado</span>
+        <p>O tempo continua contando durante as perguntas. No final, você vê o tempo total e um resumo das respostas.</p>
+      </section>
+    </div>
+    <button class="primary-action" type="button" data-close="tutorialModal">Entendi</button>
+  </dialog>
+
+  <dialog id="difficultyModal" class="modal-card difficulty-modal">
+    <p class="kicker">Escolha o nível</p>
+    <h2>Dificuldade</h2>
+    <p>Os blocos do labirinto mudam de cor conforme o desafio escolhido.</p>
+    <div class="difficulty-choice-grid">
+      <button class="difficulty easy" type="button" data-diff="Fácil">Fácil</button>
+      <button class="difficulty medium" type="button" data-diff="Médio">Médio</button>
+      <button class="difficulty hard" type="button" data-diff="Difícil">Difícil</button>
+    </div>
+  </dialog>
+
+  <dialog id="quizModal" class="modal-card">
+    <p id="quizStep" class="kicker">Desafio</p>
+    <h2 id="quizTitle">Componente</h2>
+    <p id="quizQuestion"></p>
+    <div id="quizOptions" class="option-list"></div>
+    <p id="quizFeedback" class="feedback" aria-live="polite"></p>
+    <button id="quizSubmit" class="primary-action" type="button" disabled>Responder</button>
+  </dialog>
+
+  <dialog id="victoryModal" class="modal-card modal-card--victory">
+    <p class="kicker">Transmissão concluída</p>
+    <h2>Pacote entregue!</h2>
+    <p id="victoryMessage">Você concluiu o fluxo da informação dentro do computador.</p>
+    <div class="final-score"><strong id="finalScore">0</strong><span>/100</span></div>
+    <div class="final-details">
+      <span>Tempo total: <strong id="finalTime">00:00</strong></span>
+      <span>Respostas certas: <strong id="finalCorrect">0</strong></span>
+    </div>
+    <div class="answer-review">
+      <h3>Resumo das respostas</h3>
+      <ol id="answerSummary"></ol>
+    </div>
+    <button id="menuButton" class="primary-action" type="button">Voltar ao menu</button>
+  </dialog>
+
+  <script src="assets/data/dados.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+</html>

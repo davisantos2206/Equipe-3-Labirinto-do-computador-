@@ -1,4 +1,4 @@
-{
+window.LABIRINTO_DATA = {
   "metadata": {
     "title": "Labirinto do Computador",
     "bncc": "EF05CO05",
@@ -219,3 +219,4 @@
     ]
   }
 }
+;

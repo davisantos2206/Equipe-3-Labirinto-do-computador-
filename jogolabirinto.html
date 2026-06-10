@@ -1,93 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=index.html">
   <title>Labirinto do Computador</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800&family=Fredoka+One&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="stars"></div>
-
-  <div id="loginScreen" class="modal" style="display: flex; z-index: 200;">
-    <div class="modal-content" style="border-color: #7209B7; padding: 40px;">
-      <h1 style="font-size: 2.2rem; color: #4CC9F0; margin-top: 0;">🖥️ Acesso ao Sistema</h1>
-      <p style="font-size: 1.1rem; margin-bottom: 25px;">Identifique-se para entrar no Labirinto.</p>
-
-      <form id="loginForm" onsubmit="handleLogin(event)" style="display: flex; flex-direction: column; gap: 15px;">
-        <input type="text" id="playerRA" placeholder="Nome ou RA (Registro)" required class="login-input">
-        <input type="text" id="playerClass" placeholder="Turma (Ex: 4º A)" required class="login-input">
-        <input type="number" id="playerAge" placeholder="Idade (Anos)" required min="5" max="99" class="login-input">
-
-        <button type="submit" class="btn-quiz" style="background: #7209B7; font-size: 1.2rem; margin-top: 10px;">
-          🚀 Iniciar Sessão
-        </button>
-      </form>
-    </div>
-  </div>
-  
-  <div id="container" style="display: none;">
-    <h1>🧠 Labirinto do Computador</h1>
-    <div id="game">
-      <canvas id="canvas" width="900" height="600"></canvas>
-      
-      <div id="ui">
-        <div class="card" style="border: 2px solid #4CC9F0;">
-          <h3 style="color: #4CC9F0; margin-bottom: 5px;">👤 Operador</h3>
-          <p id="playerNameDisplay" style="font-weight: 800; font-size: 1.1rem; margin: 0;">---</p>
-          <p id="playerClassDisplay" style="font-size: 0.9rem; margin: 0; color: #666;">---</p>
-        </div>
-
-        <div id="challengeMenu" class="card">
-          <h3>🎯 Dificuldade</h3>
-          
-          <button id="btnResume" class="btn-diff" style="background: #4CC9F0; color: #0D0821; display: none;" onclick="resumeGame()">
-            ▶️ Continuar
-          </button>
-          <hr id="resumeLine" style="display: none; border-top: 2px dashed #4CC9F0; border-bottom: none; margin: 15px 0;">
-          
-          <button class="btn-diff easy" onclick="startGame('Fácil')">Novo: Fácil</button>
-          <button class="btn-diff medium" onclick="startGame('Médio')">Novo: Médio</button>
-          <button class="btn-diff hard" onclick="startGame('Difícil')">Novo: Difícil</button>
-        </div>
-        
-        <div class="card card--progress">
-          <h2 id="diffLabel">Modo: -</h2>
-          <p id="fase">Fase: -</p>
-          <div id="scoreBox">⭐ Pontos: <span id="score">0</span></div>
-          <div class="best-score">🏆 Recorde: <span id="bestScore">0</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="quizModal" class="modal">
-    <div class="modal-content">
-      <h2 id="quizTitle">🧩 Desafio</h2>
-      <div id="quizQuestion" style="margin:20px 0; font-weight:800;"></div>
-      <div id="quizOptions"></div>
-      <div id="quizFeedback" style="display:none; padding:10px; border-radius:10px; margin-top:10px;"></div>
-      <button id="quizSubmit" class="btn-quiz" onclick="validateAnswer()" disabled>✅ Responder!</button>
-    </div>
-  </div>
-
-  <div id="victoryModal" class="modal">
-    <div class="modal-content" style="border-color: #FFD700;">
-      <h1 style="font-size: 3rem; margin: 10px 0;">🏆</h1>
-      <h2 style="color: #FFD700; font-family: 'Fredoka One', cursive;">Labirinto Concluído!</h2>
-      <p style="font-size: 1.2rem;">Você provou que domina o Hardware.</p>
-      
-      <div style="background: #f0f0f0; padding: 15px; border-radius: 15px; margin: 20px 0;">
-        <h3 style="margin: 0; color: #7209B7;">Sua Pontuação Final:</h3>
-        <span id="finalScore" style="font-size: 2.5rem; font-weight: 900; color: #4CC9F0;">0</span>
-      </div>
-
-      <button class="btn-quiz" onclick="returnToMenu()" style="background: #FFD700; color: #333;">
-        🎮 Voltar ao Menu
-      </button>
-    </div>
-  </div>
-
-  <script src="assets/js/script.js"></script>
+  <p>Abra <a href="index.html">index.html</a> para jogar o Labirinto do Computador.</p>
 </body>
 </html>
