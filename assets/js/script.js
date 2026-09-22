@@ -750,7 +750,7 @@ function drawBoard(now) {
   ctx.fillStyle = theme.background;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  drawCircuitBackground(now, theme);
+  drawCircuitBackground(0, theme);
 
   if (!map) {
     drawBootScreen(theme);
@@ -791,7 +791,7 @@ function drawBootScreen(theme = canvasTheme()) {
 
 function drawPhaseBanner(now, theme = canvasTheme()) {
   const phase = data.metadata.phases[currentLevel];
-  const glow = 0.45 + (Math.sin(now / 260) + 1) * 0.18;
+  const glow = 0.7;
 
   ctx.save();
   ctx.globalAlpha = 0.92;
@@ -835,30 +835,15 @@ function drawCircuitBackground(now, theme = canvasTheme()) {
 }
 
 function drawTraceTile(x, y, color, now, row, col, theme = canvasTheme()) {
-  ctx.save();
+  // Caminhos livres sem quadrados transparentes ou pulsação.
   ctx.fillStyle = theme.floorFill;
-  ctx.fillRect(x + 3, y + 3, tileSize - 6, tileSize - 6);
-  ctx.strokeStyle = isHighContrast() ? "rgba(255,255,255,0.34)" : "rgba(168, 194, 189, 0.20)";
-  ctx.lineWidth = isHighContrast() ? 3 : 2;
-  ctx.strokeRect(x + 12, y + 12, tileSize - 24, tileSize - 24);
-
-  const pulse = (Math.sin(now / 240 + row + col) + 1) / 2;
-  ctx.strokeStyle = isHighContrast() ? theme.floor : color;
-  ctx.globalAlpha = isHighContrast() ? 0.92 : 0.18 + pulse * 0.22;
-  ctx.lineWidth = isHighContrast() ? 3.5 : 2;
-  ctx.beginPath();
-  ctx.moveTo(x + 8, y + tileSize / 2);
-  ctx.lineTo(x + tileSize - 8, y + tileSize / 2);
-  ctx.moveTo(x + tileSize / 2, y + 8);
-  ctx.lineTo(x + tileSize / 2, y + tileSize - 8);
-  ctx.stroke();
-  ctx.restore();
+  ctx.fillRect(x, y, tileSize, tileSize);
 }
 
 function drawWall(x, y, color, theme = canvasTheme()) {
   ctx.save();
   ctx.fillStyle = isHighContrast() ? theme.wallFill : color;
-  ctx.globalAlpha = isHighContrast() ? 1 : 0.2;
+  ctx.globalAlpha = 1;
   ctx.fillRect(x + 6, y + 6, tileSize - 12, tileSize - 12);
   ctx.globalAlpha = 1;
   ctx.strokeStyle = isHighContrast() ? theme.wall : color;
@@ -876,7 +861,7 @@ function drawWall(x, y, color, theme = canvasTheme()) {
 }
 
 function drawComponent(x, y, phase, now, theme = canvasTheme()) {
-  const pulse = 0.75 + Math.sin(now / 180) * 0.25;
+  const pulse = 1;
   ctx.save();
   ctx.translate(x + tileSize / 2, y + tileSize / 2);
   ctx.shadowColor = theme.component;
