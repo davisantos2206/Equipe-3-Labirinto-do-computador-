@@ -527,6 +527,9 @@ body.high-contrast .difficulty {
 }
 
 .settings-bar {
+  position: sticky;
+  top: 8px;
+  z-index: 3;
   display: block;
   width: 100%;
   min-height: 48px;
