@@ -214,7 +214,7 @@ function startAmbientMusic() {
     highpass.frequency.setValueAtTime(220, now);
     lowpass.type = "lowpass";
     lowpass.frequency.setValueAtTime(2400, now);
-    master.gain.setValueAtTime(0.42, now);
+    master.gain.setValueAtTime(0.84 * preferences.musicVolume / 100, now);
 
     master.connect(highpass);
     highpass.connect(lowpass);
@@ -288,7 +288,7 @@ function stopAmbientMusic() {
 }
 
 function playTone(type) {
-  if (!audioEnabled) return;
+  if (!preferences.effects || !preferences.effectsVolume) return;
 
   try {
     const context = ensureAudioContext();
@@ -306,7 +306,7 @@ function playTone(type) {
 
     oscillator.frequency.value = frequency;
     oscillator.type = type === "wrong" || type === "hit" ? "sawtooth" : "triangle";
-    gain.gain.setValueAtTime(volume, now);
+    gain.gain.setValueAtTime(Math.max(0.0001, volume * preferences.effectsVolume / 50), now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
     oscillator.connect(gain);
     gain.connect(audioContext.destination);
@@ -1093,7 +1093,7 @@ function attachEvents() {
     dialog.addEventListener("cancel", event => event.preventDefault());
   }
   const toggles = { contrastButton: "contrast", fontButton: "largeText", motionButton: "reducedMotion",
-    stepButton: "stepMode", audioButton: "music" };
+    stepButton: "stepMode", audioButton: "music", effectsButton: "effects" };
   for (const [id, key] of Object.entries(toggles)) {
     document.getElementById(id).addEventListener("click", () => {
       preferences[key] = !preferences[key];
@@ -1102,6 +1102,13 @@ function attachEvents() {
         player.y = (Math.floor(player.y / tileSize) + 0.5) * tileSize;
         keys.clear();
       }
+      applyPreferences();
+      savePreferences();
+    });
+  }
+  for (const key of ["musicVolume", "effectsVolume"]) {
+    document.getElementById(key).addEventListener("input", event => {
+      preferences[key] = Number(event.target.value);
       applyPreferences();
       savePreferences();
     });
@@ -1176,7 +1183,7 @@ function applyPreferences() {
   const labels = {
     contrastButton: ["Alto contraste", preferences.contrast], fontButton: ["Texto ampliado", preferences.largeText],
     motionButton: ["Reduzir animações", preferences.reducedMotion], stepButton: ["Movimento por passos", preferences.stepMode],
-    audioButton: ["Música", preferences.music]
+    audioButton: ["Música", preferences.music], effectsButton: ["Efeitos sonoros", preferences.effects]
   };
   for (const [id, [label, enabled]] of Object.entries(labels)) {
     const button = document.getElementById(id);
@@ -1186,6 +1193,11 @@ function applyPreferences() {
   audioEnabled = preferences.music;
   if (!audioEnabled) stopAmbientMusic();
   else startAmbientMusic();
+  if (ambientNodes) ambientNodes.master.gain.setValueAtTime(0.84 * preferences.musicVolume / 100, audioContext.currentTime);
+  for (const key of ["musicVolume", "effectsVolume"]) {
+    document.getElementById(key).value = preferences[key];
+    document.getElementById(key).setAttribute("aria-valuetext", preferences[key] + "%");
+  }
 }
 
 function openOverlay(dialog) {
