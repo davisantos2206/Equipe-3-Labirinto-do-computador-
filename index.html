@@ -10,9 +10,10 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">Pular para o conteúdo principal</a>
   <div class="screen-grid" aria-hidden="true"></div>
 
-  <main class="app-shell" aria-labelledby="gameTitle">
+  <main id="mainContent" class="app-shell" aria-label="Labirinto do Computador" tabindex="-1">
     <section id="startScreen" class="panel panel--login">
       <div>
         <p class="kicker">Sistema educativo</p>
@@ -39,7 +40,7 @@
       <header class="topbar">
         <div>
           <p class="kicker">Fluxo da informação</p>
-          <h1>Labirinto do Computador</h1>
+          <h2>Labirinto do Computador</h2>
         </div>
         <div class="topbar-actions" aria-label="Controles do jogo">
           <button id="tutorialButton" class="icon-button" type="button" title="Tutorial" aria-label="Abrir tutorial">?</button>
@@ -51,7 +52,8 @@
 
       <div class="play-area">
         <div class="canvas-wrap">
-          <canvas id="canvas" width="960" height="640" role="img" aria-label="Labirinto em formato de placa de computador"></canvas>
+          <canvas id="canvas" width="960" height="640" role="img" aria-label="Labirinto em formato de placa de computador" aria-describedby="navigationStatus"></canvas>
+          <p id="navigationStatus" class="navigation-status" role="status" aria-live="polite" aria-atomic="true">Use as setas ou os botões para mover o pacote.</p>
           <div class="mobile-pad" aria-label="Controles de movimento">
             <button type="button" data-dir="up" aria-label="Mover para cima">▲</button>
             <button type="button" data-dir="left" aria-label="Mover para esquerda">◀</button>
@@ -98,8 +100,8 @@
     </section>
   </main>
 
-  <dialog id="tutorialModal" class="modal-card">
-    <h2>Tutorial</h2>
+  <dialog id="tutorialModal" class="modal-card" aria-labelledby="tutorialTitle">
+    <h2 id="tutorialTitle">Tutorial</h2>
     <div class="tutorial-grid">
       <section class="tutorial-card tutorial-card--wide">
         <span class="hud-label">Missão</span>
@@ -143,9 +145,9 @@
     <button class="primary-action" type="button" data-close="tutorialModal">Entendi</button>
   </dialog>
 
-  <dialog id="difficultyModal" class="modal-card difficulty-modal">
+  <dialog id="difficultyModal" class="modal-card difficulty-modal" aria-labelledby="difficultyTitle">
     <p class="kicker">Escolha o nível</p>
-    <h2>Dificuldade</h2>
+    <h2 id="difficultyTitle">Dificuldade</h2>
     <p>Os blocos do labirinto mudam de cor conforme o desafio escolhido.</p>
     <div class="difficulty-choice-grid">
       <button class="difficulty easy" type="button" data-diff="Fácil">Fácil</button>
@@ -154,7 +156,7 @@
     </div>
   </dialog>
 
-  <dialog id="quizModal" class="modal-card">
+  <dialog id="quizModal" class="modal-card" aria-labelledby="quizTitle" aria-describedby="quizQuestion">
     <p id="quizStep" class="kicker">Desafio</p>
     <h2 id="quizTitle">Componente</h2>
     <p id="quizQuestion"></p>
@@ -163,9 +165,9 @@
     <button id="quizSubmit" class="primary-action" type="button" disabled>Responder</button>
   </dialog>
 
-  <dialog id="victoryModal" class="modal-card modal-card--victory">
+  <dialog id="victoryModal" class="modal-card modal-card--victory" aria-labelledby="victoryTitle">
     <p class="kicker">Transmissão concluída</p>
-    <h2>Pacote entregue!</h2>
+    <h2 id="victoryTitle">Pacote entregue!</h2>
     <p id="victoryMessage">Você concluiu o fluxo da informação dentro do computador.</p>
     <div class="final-score"><strong id="finalScore">0</strong><span>/100</span></div>
     <div class="final-details">

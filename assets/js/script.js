@@ -38,6 +38,11 @@ const ui = {
   menuButton: document.getElementById("menuButton")
 };
 
+const navigationStatus = document.getElementById("navigationStatus");
+let lastNavigationCell = "";
+const directions = { up: [0, -1, "cima"], down: [0, 1, "baixo"], left: [-1, 0, "esquerda"], right: [1, 0, "direita"] };
+const arrowDirections = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
+
 const settings = {
   "Fácil": { speed: 180, radius: 17, wall: "#6ee77e", trace: "#6ee77e" },
   "Médio": { speed: 150, radius: 16, wall: "#ffcc66", trace: "#ffcc66" },
@@ -461,6 +466,7 @@ function loadLevel(level) {
   levelStartedAt = Date.now();
   resetPlayer();
   updatePhaseUI();
+  announcePosition(true);
   isPaused = false;
   const phase = data.metadata.phases[currentLevel];
   ui.statusText.textContent = `Você está em ${phase.name}: ${phase.goal}`;
@@ -534,6 +540,7 @@ function selectQuizOption(index, { keepSubmitDisabled = false } = {}) {
   selectedOption = focusedOptionIndex;
   options.forEach((child, childIndex) => {
     child.classList.toggle("selected", childIndex === focusedOptionIndex);
+    child.setAttribute("aria-pressed", String(childIndex === focusedOptionIndex));
     child.tabIndex = childIndex === focusedOptionIndex ? 0 : -1;
   });
   options[focusedOptionIndex].focus({ preventScroll: true });
@@ -737,6 +744,7 @@ function stepMovement(delta) {
     .filter((point) => point.life > 0)
     .slice(0, 12);
 
+  announcePosition();
   const tx = Math.floor(player.x / tileSize);
   const ty = Math.floor(player.y / tileSize);
   if (data.maps[currentDiff][currentLevel][ty][tx] === 9) {
@@ -1091,6 +1099,21 @@ function attachEvents() {
     button.addEventListener("pointerleave", release);
     button.addEventListener("pointercancel", release);
   });
+}
+
+function announcePosition(force = false, prefix = "") {
+  const map = data?.maps?.[currentDiff]?.[currentLevel];
+  if (!map) return;
+  const col = Math.floor(player.x / tileSize), row = Math.floor(player.y / tileSize);
+  const id = currentLevel + ":" + row + ":" + col;
+  if (!force && lastNavigationCell === id) return;
+  lastNavigationCell = id;
+  const free = Object.values(directions).filter(([dx, dy]) => map[row + dy]?.[col + dx] !== undefined && map[row + dy][col + dx] !== 1).map(([, , label]) => label);
+  const goalRow = map.findIndex(line => line.includes(9));
+  const goalCol = map[goalRow].indexOf(9);
+  navigationStatus.textContent = prefix + "Pacote: linha " + (row + 1) + ", coluna " + (col + 1) +
+    ". Caminhos livres: " + free.join(", ") + ". Destino: " + data.metadata.phases[currentLevel].component +
+    ", linha " + (goalRow + 1) + ", coluna " + (goalCol + 1) + ".";
 }
 
 async function init() {
