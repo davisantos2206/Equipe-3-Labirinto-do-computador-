@@ -562,16 +562,18 @@ function validateAnswer() {
   if (correct) {
     rawScore += pointsPerQuestion();
     ui.quizFeedback.className = "feedback correct";
-    ui.quizFeedback.textContent = `Correto. ${question.explanation}`;
+    ui.quizFeedback.textContent = `✓ Correto. ${question.explanation}`;
     playTone("ok");
   } else {
     ui.quizFeedback.className = "feedback wrong";
-    ui.quizFeedback.textContent = `Quase lá. ${question.explanation}`;
+    ui.quizFeedback.textContent = `⚠ Resposta incorreta. ${question.explanation}`;
     playTone("wrong");
   }
 
   options.forEach((button, index) => {
     button.disabled = true;
+    if (index === question.correct) button.textContent += " — Resposta correta";
+    else if (index === selectedOption) button.textContent += " — Sua resposta (incorreta)";
     button.classList.toggle("correct-answer", index === question.correct);
     button.classList.toggle("wrong-answer", index === selectedOption && !correct);
   });
