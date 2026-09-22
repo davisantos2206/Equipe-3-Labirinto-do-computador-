@@ -14,6 +14,7 @@
   <div class="screen-grid" aria-hidden="true"></div>
 
   <main id="mainContent" class="app-shell" aria-label="Labirinto do Computador" tabindex="-1">
+    <button id="settingsButton" class="settings-bar secondary-action" type="button" aria-haspopup="dialog" aria-controls="settingsModal" aria-expanded="false">☰ Configurações e acessibilidade</button>
     <section id="startScreen" class="panel panel--login">
       <div>
         <p class="kicker">Sistema educativo</p>
@@ -42,13 +43,6 @@
           <p class="kicker">Fluxo da informação</p>
           <h2>Labirinto do Computador</h2>
         </div>
-        <div class="topbar-actions" aria-label="Controles do jogo">
-          <button id="stepButton" class="secondary-action" type="button" aria-pressed="false">Movimento por passos: desativado</button>
-          <button id="tutorialButton" class="icon-button" type="button" title="Tutorial" aria-label="Abrir tutorial">?</button>
-          <button id="contrastButton" class="icon-button" type="button" title="Alto contraste" aria-label="Alternar alto contraste">◐</button>
-          <button id="fontButton" class="icon-button" type="button" title="Fonte maior" aria-label="Alternar fonte maior">A</button>
-          <button id="audioButton" class="icon-button" type="button" title="Som" aria-label="Ligar ou desligar som">♪</button>
-        </div>
       </header>
 
       <div class="play-area">
@@ -72,14 +66,14 @@
             <span id="playerClassDisplay" class="sr-only">Escolha uma dificuldade.</span>
           </section>
 
-          <section class="hud-block">
-            <span class="hud-label">Dificuldade</span>
+          <section id="difficultyControls" class="hud-block">
+            <span class="hud-label">Nova partida</span>
+            <span>Escolher uma dificuldade reinicia a partida.</span>
             <div class="difficulty-grid">
               <button class="difficulty easy" type="button" data-diff="Fácil">Fácil</button>
               <button class="difficulty medium" type="button" data-diff="Médio">Médio</button>
               <button class="difficulty hard" type="button" data-diff="Difícil">Difícil</button>
             </div>
-            <button id="resumeButton" class="secondary-action" type="button" hidden>Continuar</button>
           </section>
 
           <section class="hud-block progress-block">
@@ -101,12 +95,32 @@
     </section>
   </main>
 
+  <dialog id="settingsModal" class="modal-card" aria-labelledby="settingsTitle">
+    <div class="settings-heading">
+      <h2 id="settingsTitle" tabindex="-1">Configurações e acessibilidade</h2>
+      <button class="secondary-action" type="button" data-close="settingsModal">Fechar</button>
+    </div>
+    <p>Ajuste o jogo do seu jeito. Suas preferências ficam salvas neste navegador.</p>
+    <div class="settings-options">
+      <button id="contrastButton" class="secondary-action" type="button" aria-pressed="false">Alto contraste</button>
+      <button id="fontButton" class="secondary-action" type="button" aria-pressed="false">Texto ampliado</button>
+      <button id="motionButton" class="secondary-action" type="button" aria-pressed="false">Reduzir animações</button>
+      <button id="stepButton" class="secondary-action" type="button" aria-pressed="false">Movimento por passos</button>
+      <p>No modo por passos, cada toque ou seta anda uma casa. A posição e os caminhos livres são descritos abaixo do labirinto.</p>
+      <button id="audioButton" class="secondary-action" type="button" aria-pressed="true">Música: ligada</button>
+      <button id="tutorialButton" class="secondary-action" type="button">Como jogar</button>
+      <div id="settingsGameControls"></div>
+      <p>Teclado: Tab muda o foco; Enter ou Espaço ativa botões; setas movem o pacote; Escape fecha as configurações.</p>
+      <button class="primary-action" type="button" data-close="settingsModal">Fechar configurações</button>
+    </div>
+  </dialog>
+
   <dialog id="tutorialModal" class="modal-card" aria-labelledby="tutorialTitle">
     <h2 id="tutorialTitle">Tutorial</h2>
     <div class="tutorial-grid">
       <section class="tutorial-card tutorial-card--wide">
         <span class="hud-label">Missão</span>
-        <p>Você é um pacote de dados viajando por dentro do computador. Chegue ao componente brilhante de cada fase.</p>
+        <p>Você é um pacote de dados viajando por dentro do computador. Chegue ao componente indicado em cada fase: teclado, CPU, memória e monitor.</p>
         <div class="flow-preview" aria-label="Fluxo: Entrada, CPU, Memória e Saída">
           <span>Entrada</span>
           <span>CPU</span>
@@ -125,7 +139,7 @@
           <kbd>↓</kbd>
           <kbd>→</kbd>
         </div>
-        <p>Use as setas para andar pelo labirinto. No celular, use os botões abaixo do labirinto.</p>
+        <p>Use as setas ou os botões de movimento. Em Configurações, ative Movimento por passos para andar uma casa por toque. A descrição da posição informa os caminhos livres e o destino, também para leitores de tela.</p>
       </section>
 
       <section class="tutorial-card">
@@ -155,6 +169,7 @@
       <button class="difficulty medium" type="button" data-diff="Médio">Médio</button>
       <button class="difficulty hard" type="button" data-diff="Difícil">Difícil</button>
     </div>
+    <button id="resumeButton" class="secondary-action" type="button" hidden>Continuar</button>
   </dialog>
 
   <dialog id="quizModal" class="modal-card" aria-labelledby="quizTitle" aria-describedby="quizQuestion">

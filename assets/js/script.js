@@ -38,9 +38,25 @@ const ui = {
   menuButton: document.getElementById("menuButton")
 };
 
+const settingsModal = document.getElementById("settingsModal");
+const settingsButton = document.getElementById("settingsButton");
 const navigationStatus = document.getElementById("navigationStatus");
+const preferenceKey = "labirinto_acessibilidade_v1";
+const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+const preferences = { contrast: false, largeText: false, reducedMotion: motionQuery.matches,
+  stepMode: false, music: true, effects: true, musicVolume: 50, effectsVolume: 50 };
+try {
+  const saved = JSON.parse(localStorage.getItem(preferenceKey) || "{}");
+  for (const key of Object.keys(preferences)) {
+    if (typeof saved[key] === typeof preferences[key]) preferences[key] = saved[key];
+  }
+  for (const key of ["musicVolume", "effectsVolume"]) {
+    preferences[key] = Number.isFinite(preferences[key]) ? Math.max(0, Math.min(100, preferences[key])) : 50;
+  }
+} catch { /* O jogo continua mesmo se o armazenamento estiver indisponível. */ }
+let overlayPausedAt = 0;
 let lastNavigationCell = "";
-let stepMode = false;
+let lastHitAt = 0;
 const directions = { up: [0, -1, "cima"], down: [0, 1, "baixo"], left: [-1, 0, "esquerda"], right: [1, 0, "direita"] };
 const arrowDirections = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
 
@@ -67,7 +83,7 @@ let focusedDifficultyIndex = 0;
 let quizState = "answer";
 let currentQuestion = 0;
 let answerLog = [];
-let audioEnabled = true;
+let audioEnabled = preferences.music;
 let audioContext = null;
 let ambientNodes = null;
 let ambientTimer = null;
@@ -420,10 +436,16 @@ function resetPlayer() {
 }
 
 function startGame(diff) {
+  if (!data) return;
+  settingsModal.close();
+  overlayPausedAt = 0;
+  keys.clear();
   if (ui.difficultyModal.open) {
     ui.difficultyModal.close();
   }
 
+  ui.startScreen.hidden = true;
+  ui.gameScreen.hidden = false;
   currentDiff = diff;
   currentLevel = 0;
   rawScore = 0;
@@ -440,6 +462,10 @@ function startGame(diff) {
 }
 
 function resumeGame() {
+  settingsModal.close();
+  ui.difficultyModal.close();
+  overlayPausedAt = 0;
+  keys.clear();
   const saved = localStorage.getItem(saveKey);
   if (!saved) return;
 
@@ -469,12 +495,17 @@ function loadLevel(level) {
   updatePhaseUI();
   announcePosition(true);
   isPaused = false;
+  document.querySelector(".mobile-pad button").focus({ preventScroll: true });
   const phase = data.metadata.phases[currentLevel];
   ui.statusText.textContent = `Você está em ${phase.name}: ${phase.goal}`;
 }
 
 function returnToMenu() {
   ui.victoryModal.close();
+  ui.startScreen.hidden = false;
+  ui.gameScreen.hidden = true;
+  document.getElementById("settingsGameControls").hidden = true;
+  ui.playButton.focus();
   isPaused = true;
   gameStartedAt = 0;
   finalElapsedMs = 0;
@@ -701,7 +732,7 @@ function canMoveTo(x, y) {
 }
 
 function stepMovement(delta) {
-  if (isPaused || !data) {
+  if (isPaused || !data || document.querySelector("dialog[open]")) {
     player.moving = false;
     return;
   }
@@ -718,7 +749,7 @@ function stepMovement(delta) {
     dy *= Math.SQRT1_2;
   }
 
-  if (stepMode) { player.moving = false; return; }
+  if (preferences.stepMode) { player.moving = false; return; }
   const speed = settings[currentDiff].speed;
   const nextX = player.x + dx * speed * delta;
   const nextY = player.y + dy * speed * delta;
@@ -738,7 +769,11 @@ function stepMovement(delta) {
     player.vx = 0;
     player.vy = 0;
     player.angle *= 0.82;
-    if (player.moving) playTone("hit");
+    if (player.moving && performance.now() - lastHitAt > 650) {
+      lastHitAt = performance.now();
+      playTone("hit");
+      announcePosition(true, "Parede. ");
+    }
   }
 
   player.trail = player.trail
@@ -895,9 +930,9 @@ function drawComponent(x, y, phase, now, theme = canvasTheme()) {
 }
 
 function drawDataPacket(now, theme = canvasTheme()) {
-  const bob = Math.sin(player.bob) * (player.moving ? 3 : 1);
+  const bob = preferences.reducedMotion ? 0 : Math.sin(player.bob) * (player.moving ? 3 : 1);
 
-  player.trail.forEach((point, index) => {
+  (preferences.reducedMotion ? [] : player.trail).forEach((point, index) => {
     ctx.save();
     ctx.globalAlpha = point.life * 0.35;
     ctx.fillStyle = isHighContrast() ? (index % 2 ? "#00ffff" : "#ffff00") : (index % 2 ? "#5ff5dd" : "#ffcc66");
@@ -909,7 +944,7 @@ function drawDataPacket(now, theme = canvasTheme()) {
 
   ctx.save();
   ctx.translate(player.x, player.y + boardOffsetY + bob);
-  ctx.rotate(player.angle);
+  ctx.rotate(preferences.reducedMotion ? 0 : player.angle);
   ctx.shadowColor = isHighContrast() ? "#ffffff" : "#5ff5dd";
   ctx.shadowBlur = isHighContrast() ? 0 : (player.moving ? 22 : 12);
 
@@ -945,10 +980,10 @@ function loop(now) {
   lastFrame = now;
 
   stepMovement(delta);
-  drawBoard(now);
+  drawBoard(preferences.reducedMotion ? 0 : now);
 
   if (gameStartedAt && !ui.victoryModal.open) {
-    ui.timer.textContent = formatTime(Date.now() - gameStartedAt);
+    ui.timer.textContent = formatTime((overlayPausedAt || Date.now()) - gameStartedAt);
   }
 
   requestAnimationFrame(loop);
@@ -993,7 +1028,7 @@ function handleDifficultyKeyboard(event) {
     return true;
   }
 
-  if (event.key === "Enter") {
+  if (event.key === "Enter" && event.target !== ui.resumeButton) {
     event.preventDefault();
     difficultyModalButtons()[focusedDifficultyIndex]?.click();
     return true;
@@ -1005,7 +1040,6 @@ function handleDifficultyKeyboard(event) {
 function attachEvents() {
   const unlockAudio = () => {
     if (!audioEnabled) return;
-    ensureAudioContext();
     startAmbientMusic();
   };
 
@@ -1020,59 +1054,60 @@ function attachEvents() {
     ui.playerClassDisplay.textContent = "Escolha uma dificuldade.";
     ui.startScreen.hidden = true;
     ui.gameScreen.hidden = false;
-    ensureAudioContext();
+    document.getElementById("settingsGameControls").hidden = false;
     startAmbientMusic();
     checkSavedProgress();
     ui.statusText.textContent = "Leia o tutorial e escolha uma dificuldade para começar.";
-    window.setTimeout(() => ui.tutorialModal.showModal(), 0);
+    window.setTimeout(() => openOverlay(ui.tutorialModal), 0);
   });
 
   document.querySelectorAll("[data-diff]").forEach((button) => {
     button.addEventListener("click", () => startGame(button.dataset.diff));
   });
 
-  document.getElementById("stepButton").addEventListener("click", event => {
-    stepMode = !stepMode; keys.clear();
-    player.x = (Math.floor(player.x / tileSize) + 0.5) * tileSize;
-    player.y = (Math.floor(player.y / tileSize) + 0.5) * tileSize;
-    event.currentTarget.setAttribute("aria-pressed", String(stepMode));
-    event.currentTarget.textContent = "Movimento por passos: " + (stepMode ? "ativado" : "desativado");
-  });
-  window.addEventListener("blur", () => keys.clear());
-  document.addEventListener("visibilitychange", () => keys.clear());
   ui.resumeButton.addEventListener("click", resumeGame);
   ui.quizSubmit.addEventListener("click", handleQuizSubmit);
   ui.menuButton.addEventListener("click", returnToMenu);
   ui.tutorialButton.addEventListener("click", () => {
-    isPaused = true;
-    keys.clear();
-    ui.tutorialModal.showModal();
+    settingsModal.close();
+    openOverlay(ui.tutorialModal);
   });
-
+  settingsButton.addEventListener("click", () => openOverlay(settingsModal));
   document.querySelectorAll("[data-close]").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.getElementById(button.dataset.close).close();
-      if (button.dataset.close === "tutorialModal") {
-        if (gameStartedAt && data?.maps?.[currentDiff]?.[currentLevel]) {
-          isPaused = false;
-        } else {
-          showDifficultyModal();
-        }
-      }
+    button.addEventListener("click", () => document.getElementById(button.dataset.close).close());
+  });
+  for (const dialog of [settingsModal, ui.tutorialModal]) {
+    dialog.addEventListener("close", () => {
+      settingsButton.setAttribute("aria-expanded", String(settingsModal.open));
+      if (document.querySelector("dialog[open]")) return;
+      if (overlayPausedAt && gameStartedAt) gameStartedAt += Date.now() - overlayPausedAt;
+      overlayPausedAt = 0;
+      keys.clear();
+      isPaused = !gameStartedAt;
+      if (dialog === ui.tutorialModal && !gameStartedAt && !ui.gameScreen.hidden) showDifficultyModal();
+      else settingsButton.focus();
     });
-  });
-
-  ui.contrastButton.addEventListener("click", () => document.body.classList.toggle("high-contrast"));
-  ui.fontButton.addEventListener("click", () => document.body.classList.toggle("large-text"));
-  ui.audioButton.addEventListener("click", () => {
-    audioEnabled = !audioEnabled;
-    ui.audioButton.textContent = audioEnabled ? "♪" : "×";
-    if (audioEnabled) {
-      startAmbientMusic();
-    } else {
-      stopAmbientMusic();
-    }
-  });
+  }
+  // Impede Escape de fechar um desafio e deixar a partida sem continuação.
+  for (const dialog of [ui.quizModal, ui.difficultyModal, ui.victoryModal]) {
+    dialog.addEventListener("cancel", event => event.preventDefault());
+  }
+  const toggles = { contrastButton: "contrast", fontButton: "largeText", motionButton: "reducedMotion",
+    stepButton: "stepMode", audioButton: "music" };
+  for (const [id, key] of Object.entries(toggles)) {
+    document.getElementById(id).addEventListener("click", () => {
+      preferences[key] = !preferences[key];
+      if (key === "stepMode") {
+        player.x = (Math.floor(player.x / tileSize) + 0.5) * tileSize;
+        player.y = (Math.floor(player.y / tileSize) + 0.5) * tileSize;
+        keys.clear();
+      }
+      applyPreferences();
+      savePreferences();
+    });
+  }
+  window.addEventListener("blur", () => keys.clear());
+  document.addEventListener("visibilitychange", () => keys.clear());
 
   document.addEventListener("keydown", (event) => {
     if (handleQuizKeyboard(event)) return;
@@ -1090,8 +1125,9 @@ function attachEvents() {
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
       event.preventDefault();
       if (isPaused) return;
-      if (stepMode) { if (!event.repeat) moveOneCell(arrowDirections[event.key]); }
-      else keys.add(event.key);
+      if (preferences.stepMode) {
+        if (!event.repeat) moveOneCell(arrowDirections[event.key]);
+      } else keys.add(event.key);
     }
   });
 
@@ -1108,25 +1144,57 @@ function attachEvents() {
       pressStartedAt = performance.now();
       pressCell = Math.floor(player.x / tileSize) + ":" + Math.floor(player.y / tileSize);
       button.setPointerCapture(event.pointerId);
-      if (!stepMode) keys.add(dir);
+      if (!preferences.stepMode) keys.add(dir);
     });
     const release = () => keys.delete(dir);
     for (const name of ["pointerup", "pointercancel", "lostpointercapture"]) button.addEventListener(name, release);
     button.addEventListener("click", event => {
       const sameCell = pressCell === Math.floor(player.x / tileSize) + ":" + Math.floor(player.y / tileSize);
       const quickTap = performance.now() - pressStartedAt < 200 && sameCell;
-      if (stepMode || event.detail === 0 || quickTap) moveOneCell(dir);
+      if (preferences.stepMode || event.detail === 0 || quickTap) moveOneCell(dir);
     });
     button.addEventListener("keydown", event => {
       if (arrowDirections[event.key]) {
         event.preventDefault();
         event.stopPropagation();
-        if (stepMode) {
+        if (preferences.stepMode) {
           if (!event.repeat) moveOneCell(arrowDirections[event.key]);
         } else if (!isPaused) keys.add(event.key);
       }
     });
   });
+}
+
+function savePreferences() {
+  try { localStorage.setItem(preferenceKey, JSON.stringify(preferences)); } catch {}
+}
+
+function applyPreferences() {
+  document.body.classList.toggle("high-contrast", preferences.contrast);
+  document.body.classList.toggle("large-text", preferences.largeText);
+  document.body.classList.toggle("reduced-motion", preferences.reducedMotion);
+  const labels = {
+    contrastButton: ["Alto contraste", preferences.contrast], fontButton: ["Texto ampliado", preferences.largeText],
+    motionButton: ["Reduzir animações", preferences.reducedMotion], stepButton: ["Movimento por passos", preferences.stepMode],
+    audioButton: ["Música", preferences.music]
+  };
+  for (const [id, [label, enabled]] of Object.entries(labels)) {
+    const button = document.getElementById(id);
+    button.textContent = label + ": " + (enabled ? "ativado" : "desativado");
+    button.setAttribute("aria-pressed", String(enabled));
+  }
+  audioEnabled = preferences.music;
+  if (!audioEnabled) stopAmbientMusic();
+  else startAmbientMusic();
+}
+
+function openOverlay(dialog) {
+  keys.clear();
+  isPaused = true;
+  if (gameStartedAt && !overlayPausedAt) overlayPausedAt = Date.now();
+  dialog.showModal();
+  if (dialog === settingsModal) document.getElementById("settingsTitle").focus();
+  settingsButton.setAttribute("aria-expanded", String(settingsModal.open));
 }
 
 function announcePosition(force = false, prefix = "") {
@@ -1162,7 +1230,10 @@ function moveOneCell(dir) {
 }
 
 async function init() {
+  document.getElementById("settingsGameControls").appendChild(document.getElementById("difficultyControls"));
+  document.getElementById("settingsGameControls").hidden = ui.gameScreen.hidden;
   attachEvents();
+  applyPreferences();
   try {
     await loadGameData();
     ui.statusText.textContent = "Sistema carregado. Escolha uma dificuldade para começar.";
