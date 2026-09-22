@@ -40,6 +40,7 @@ const ui = {
 
 const navigationStatus = document.getElementById("navigationStatus");
 let lastNavigationCell = "";
+let stepMode = false;
 const directions = { up: [0, -1, "cima"], down: [0, 1, "baixo"], left: [-1, 0, "esquerda"], right: [1, 0, "direita"] };
 const arrowDirections = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
 
@@ -717,6 +718,7 @@ function stepMovement(delta) {
     dy *= Math.SQRT1_2;
   }
 
+  if (stepMode) { player.moving = false; return; }
   const speed = settings[currentDiff].speed;
   const nextX = player.x + dx * speed * delta;
   const nextY = player.y + dy * speed * delta;
@@ -1029,6 +1031,15 @@ function attachEvents() {
     button.addEventListener("click", () => startGame(button.dataset.diff));
   });
 
+  document.getElementById("stepButton").addEventListener("click", event => {
+    stepMode = !stepMode; keys.clear();
+    player.x = (Math.floor(player.x / tileSize) + 0.5) * tileSize;
+    player.y = (Math.floor(player.y / tileSize) + 0.5) * tileSize;
+    event.currentTarget.setAttribute("aria-pressed", String(stepMode));
+    event.currentTarget.textContent = "Movimento por passos: " + (stepMode ? "ativado" : "desativado");
+  });
+  window.addEventListener("blur", () => keys.clear());
+  document.addEventListener("visibilitychange", () => keys.clear());
   ui.resumeButton.addEventListener("click", resumeGame);
   ui.quizSubmit.addEventListener("click", handleQuizSubmit);
   ui.menuButton.addEventListener("click", returnToMenu);
@@ -1067,6 +1078,9 @@ function attachEvents() {
     if (handleQuizKeyboard(event)) return;
     if (handleDifficultyKeyboard(event)) return;
 
+    if (document.querySelector("dialog[open]")) return;
+    if (event.target.closest("input, select, a")) return;
+    if (event.target.closest("button") && !arrowDirections[event.key]) return;
     if (event.key === "Enter" && !ui.startScreen.hidden) {
       event.preventDefault();
       ui.playButton.click();
@@ -1075,7 +1089,9 @@ function attachEvents() {
 
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
       event.preventDefault();
-      keys.add(event.key);
+      if (isPaused) return;
+      if (stepMode) { if (!event.repeat) moveOneCell(arrowDirections[event.key]); }
+      else keys.add(event.key);
     }
   });
 
@@ -1085,19 +1101,31 @@ function attachEvents() {
 
   document.querySelectorAll(".mobile-pad button").forEach((button) => {
     const dir = button.dataset.dir;
-    const press = (event) => {
-      event.preventDefault();
-      keys.add(dir);
-    };
-    const release = (event) => {
-      event.preventDefault();
-      keys.delete(dir);
-    };
-
-    button.addEventListener("pointerdown", press);
-    button.addEventListener("pointerup", release);
-    button.addEventListener("pointerleave", release);
-    button.addEventListener("pointercancel", release);
+    let pressStartedAt = 0;
+    let pressCell = "";
+    button.addEventListener("pointerdown", event => {
+      if (event.button !== 0 || isPaused) return;
+      pressStartedAt = performance.now();
+      pressCell = Math.floor(player.x / tileSize) + ":" + Math.floor(player.y / tileSize);
+      button.setPointerCapture(event.pointerId);
+      if (!stepMode) keys.add(dir);
+    });
+    const release = () => keys.delete(dir);
+    for (const name of ["pointerup", "pointercancel", "lostpointercapture"]) button.addEventListener(name, release);
+    button.addEventListener("click", event => {
+      const sameCell = pressCell === Math.floor(player.x / tileSize) + ":" + Math.floor(player.y / tileSize);
+      const quickTap = performance.now() - pressStartedAt < 200 && sameCell;
+      if (stepMode || event.detail === 0 || quickTap) moveOneCell(dir);
+    });
+    button.addEventListener("keydown", event => {
+      if (arrowDirections[event.key]) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (stepMode) {
+          if (!event.repeat) moveOneCell(arrowDirections[event.key]);
+        } else if (!isPaused) keys.add(event.key);
+      }
+    });
   });
 }
 
@@ -1114,6 +1142,23 @@ function announcePosition(force = false, prefix = "") {
   navigationStatus.textContent = prefix + "Pacote: linha " + (row + 1) + ", coluna " + (col + 1) +
     ". Caminhos livres: " + free.join(", ") + ". Destino: " + data.metadata.phases[currentLevel].component +
     ", linha " + (goalRow + 1) + ", coluna " + (goalCol + 1) + ".";
+}
+
+function moveOneCell(dir) {
+  if (isPaused || !data || document.querySelector("dialog[open]")) return;
+  const [dx, dy] = directions[dir];
+  const x = (Math.floor(player.x / tileSize) + dx + 0.5) * tileSize;
+  const y = (Math.floor(player.y / tileSize) + dy + 0.5) * tileSize;
+  if (!canMoveTo(x, y)) {
+    playTone("hit");
+    announcePosition(true, "Parede. ");
+    return;
+  }
+  player.x = x; player.y = y; player.vx = dx; player.vy = dy;
+  player.trail = [];
+  playTone("move");
+  announcePosition(true);
+  if (cellAt(x, y) === 9) openQuiz();
 }
 
 async function init() {

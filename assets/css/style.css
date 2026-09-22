@@ -501,7 +501,7 @@ body.high-contrast .difficulty {
 }
 
 .mobile-pad {
-  display: none;
+  display: grid;
   grid-template-columns: repeat(3, 56px);
   grid-template-areas:
     ". up ."
@@ -518,7 +518,9 @@ body.high-contrast .difficulty {
 
 .mobile-pad button {
   width: 56px;
-  height: 48px;
+  height: 56px;
+  touch-action: none;
+  user-select: none;
   color: var(--text);
   background: #183841;
   border: 1px solid var(--line);
@@ -826,3 +828,6 @@ kbd {
 .skip-link { position: fixed; top: 0; left: 12px; transform: translateY(-150%); z-index: 10; padding: 14px; background: #fff; color: #000; }
 .skip-link:focus { transform: translateY(0); }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+canvas { height: auto; max-height: none; }
+.mobile-pad button:active { background: var(--accent); color: #061113; transform: scale(0.96); }
