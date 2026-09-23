@@ -467,6 +467,9 @@ function loadLevel(level) {
   isPaused = false;
   document.querySelector(".mobile-pad button").focus({ preventScroll: true });
   const phase = data.metadata.phases[currentLevel];
+  document.getElementById("phaseDescription").textContent = phaseDescription();
+  document.getElementById("eventCaption").textContent = "Fase " + (currentLevel + 1) + " iniciada: " + phase.component + ".";
+  narrate(phaseDescription() + " " + navigationStatus.textContent);
   ui.statusText.textContent = `Você está em ${phase.name}: ${phase.goal}`;
 }
 
@@ -1102,6 +1105,11 @@ function attachEvents() {
   window.addEventListener("blur", () => keys.clear());
   document.addEventListener("visibilitychange", () => keys.clear());
 
+  document.getElementById("readPhaseButton").addEventListener("click", () => {
+    const text = phaseDescription();
+    publishGuidance(text);
+    if (!preferences.narration) accessibility.speak(text);
+  });
   document.getElementById("positionButton").addEventListener("click", () => { announcePosition(true); publishGuidance(navigationStatus.textContent); });
   document.getElementById("guideButton").addEventListener("click", () => publishGuidance(routeGuidance()));
   document.getElementById("readQuestionButton").addEventListener("click", () => {
@@ -1251,6 +1259,12 @@ function moveOneCell(dir) {
   if (cellAt(x, y) === 9) openQuiz();
 }
 
+function phaseDescription() {
+  if (!gameStartedAt) return "Escolha uma dificuldade para iniciar a partida.";
+  const phase = data.metadata.phases[currentLevel];
+  return "Fase " + (currentLevel + 1) + ": " + phase.name + ". Você está em: " + phase.component + ". " + phase.goal;
+}
+
 function usesStepMovement() { return preferences.stepMode || preferences.blindMode; }
 function narrate(text) { if (preferences.narration) accessibility.speak(text); }
 function routeGuidance() {
@@ -1276,6 +1290,7 @@ async function init() {
   if (!accessibility.speechSupported()) {
     preferences.narration = false;
     document.getElementById("narrationButton").disabled = true;
+    document.getElementById("readPhaseButton").textContent = "Ler descrição da fase";
     document.getElementById("narrationHelp").textContent = "Este navegador não oferece leitura em voz alta. As descrições permanecem disponíveis para leitores de tela.";
   }
   applyPreferences();

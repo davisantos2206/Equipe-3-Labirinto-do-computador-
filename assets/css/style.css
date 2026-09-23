@@ -940,3 +940,26 @@ body.is-playing.large-text .game-layout { height: auto; min-height: calc(100dvh 
 body.is-playing.large-text .board-stage { min-height: 200px; }
 
 .event-caption { margin: 0; padding: 8px 12px; border: 2px solid var(--accent, #5ff5dd); font-weight: 700; flex: 0 0 auto; }
+
+/* Leitura e setas ficam à direita do tabuleiro. */
+.play-controls { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.play-controls .navigation-tools { display: grid; grid-template-columns: 1fr; }
+.play-controls .mobile-pad { justify-content: center; }
+@media (max-width: 700px) and (min-height: 500px) {
+  .side-panel .settings-bar { grid-column: 1; grid-row: 1; }
+  .side-panel .progress-block { grid-column: 1; grid-row: 2; }
+  .side-panel .play-controls { grid-column: 2; grid-row: 1 / 3; gap: 8px; }
+  .play-controls .mobile-pad { grid-template-columns: repeat(3, 44px); }
+  .play-controls .mobile-pad button { width: 44px; height: 44px; }
+  .play-controls .navigation-tools { gap: 4px; }
+}
+@media (max-height: 499px) and (min-width: 701px) {
+  body.is-playing .play-area { grid-template-columns: minmax(0, 1fr) 300px; }
+  .side-panel { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .side-panel .settings-bar { grid-column: 1 / 3; padding: 6px; min-height: 44px; }
+  .side-panel .progress-block { grid-column: 1; padding: 6px; }
+  .side-panel .play-controls { grid-column: 2; gap: 6px; }
+  .play-controls .navigation-tools { gap: 4px; }
+  .play-controls .mobile-pad { grid-template-areas: ". up ." "left down right"; grid-template-columns: repeat(3, 44px); gap: 3px; }
+  .play-controls .mobile-pad button { width: 44px; height: 44px; }
+}

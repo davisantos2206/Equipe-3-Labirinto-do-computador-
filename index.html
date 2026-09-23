@@ -48,21 +48,13 @@
       <div class="play-area">
         <div class="canvas-wrap">
           <div class="board-stage">
-          <canvas id="canvas" width="960" height="640" role="img" aria-label="Labirinto em formato de placa de computador" aria-describedby="navigationStatus"></canvas>
+          <canvas id="canvas" width="960" height="640" role="img" aria-label="Labirinto em formato de placa de computador" aria-describedby="phaseDescription navigationStatus"></canvas>
           </div>
+          <p id="phaseDescription" class="sr-only"></p>
           <p id="navigationStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true">Use as setas ou os botões para mover o pacote.</p>
-          <div class="navigation-tools" aria-label="Orientação no labirinto">
-            <button id="positionButton" class="secondary-action" type="button">Repetir posição</button>
-            <button id="guideButton" class="secondary-action" type="button">Orientar próximo passo</button>
-          </div>
           <p id="eventCaption" class="event-caption" hidden>Jogo sem pistas sonoras obrigatórias. Os eventos aparecem aqui.</p>
           <p id="guidanceStatus" class="navigation-status" role="status" aria-live="polite" aria-atomic="true"></p>
-          <div class="mobile-pad" aria-label="Controles de movimento">
-            <button type="button" data-dir="up" aria-label="Mover para cima">▲</button>
-            <button type="button" data-dir="left" aria-label="Mover para esquerda">◀</button>
-            <button type="button" data-dir="down" aria-label="Mover para baixo">▼</button>
-            <button type="button" data-dir="right" aria-label="Mover para direita">▶</button>
-          </div>
+
         </div>
 
         <aside class="side-panel" aria-label="Informações da partida">
@@ -88,6 +80,19 @@
             <span>Tempo: <strong id="timer">00:00</strong></span>
           </section>
 
+          <section class="play-controls" aria-label="Leitura e movimento">
+          <div class="navigation-tools" aria-label="Orientação no labirinto">
+            <button id="readPhaseButton" class="secondary-action" type="button" aria-controls="guidanceStatus">Ler fase em voz alta</button>
+            <button id="positionButton" class="secondary-action" type="button">Repetir posição</button>
+            <button id="guideButton" class="secondary-action" type="button">Orientar próximo passo</button>
+          </div>
+          <div class="mobile-pad" aria-label="Controles de movimento">
+            <button type="button" data-dir="up" aria-label="Mover para cima">▲</button>
+            <button type="button" data-dir="left" aria-label="Mover para esquerda">◀</button>
+            <button type="button" data-dir="down" aria-label="Mover para baixo">▼</button>
+            <button type="button" data-dir="right" aria-label="Mover para direita">▶</button>
+          </div>
+          </section>
         </aside>
       </div>
       <p id="statusText" class="sr-only" aria-live="polite">Escolha uma dificuldade para começar.</p>
