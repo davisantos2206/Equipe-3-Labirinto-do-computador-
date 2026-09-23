@@ -892,3 +892,49 @@ kbd {
 .navigation-tools { display: flex; gap: 8px; flex-wrap: wrap; }
 .navigation-tools button, #readQuestionButton { min-height: 44px; padding: 8px 12px; }
 .settings-options button:disabled { opacity: .65; cursor: not-allowed; }
+
+/* A partida ocupa a janela; menus continuam rolaveis quando necessario. */
+body.is-playing .app-shell { height: 100dvh; padding: 10px 0; }
+body.is-playing .game-layout { height: 100%; min-height: 0; display: flex; flex-direction: column; padding: 12px; }
+body.is-playing .topbar { flex: 0 0 auto; margin: 0 0 8px; }
+body.is-playing .topbar .kicker { margin-bottom: 4px; }
+body.is-playing .topbar h2 { font-size: clamp(1.1rem, 2.5vw, 1.8rem); }
+body.is-playing .play-area { flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) 250px; align-items: stretch; }
+.canvas-wrap { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.board-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.board-stage canvas { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+.side-panel { align-content: start; grid-template-columns: 1fr; }
+.side-panel .settings-bar { position: static; margin: 0; font-size: .95em; }
+.navigation-tools { justify-content: center; flex: 0 0 auto; }
+.navigation-tools button { font-size: .85em; }
+#guidanceStatus { margin: 0; }
+#guidanceStatus:empty { display: none; }
+.mobile-pad { margin: 0; gap: 6px; flex: 0 0 auto; }
+.progress-block #componentLabel { display: none; }
+#startSettingsButton { min-height: 48px; padding: 12px; }
+@media (max-width: 700px) and (min-height: 500px) {
+  body.is-playing .play-area { display: flex; flex-direction: column; gap: 8px; }
+  .canvas-wrap { flex: 1; }
+  .side-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; flex: 0 0 auto; }
+  .side-panel .settings-bar { padding: 8px; }
+  .progress-block { padding: 8px; gap: 3px; font-size: .8em; }
+  .progress-block .hud-label, .progress-block .meter { display: none; }
+  .navigation-tools button { padding: 6px 8px; }
+}
+@media (max-height: 499px) {
+  body.is-playing .play-area { grid-template-columns: minmax(0, 1fr) 215px; gap: 8px; }
+  .mobile-pad { grid-template-areas: "left up down right"; grid-template-columns: repeat(4, 48px); }
+  .mobile-pad button { width: 48px; height: 44px; }
+  .navigation-tools button { min-height: 44px; padding: 4px 8px; }
+  .progress-block { padding: 8px; gap: 4px; font-size: .8em; }
+}
+/* Nao corta controles quando o usuario amplia o texto ou usa zoom alto. */
+@media (max-width: 450px) and (max-height: 499px), (max-height: 320px) {
+  body.is-playing .app-shell { height: auto; min-height: 100dvh; }
+  body.is-playing .game-layout { height: auto; }
+  body.is-playing .play-area { display: flex; flex-direction: column; }
+  .board-stage { min-height: 160px; }
+}
+body.is-playing.large-text .app-shell { height: auto; min-height: 100dvh; }
+body.is-playing.large-text .game-layout { height: auto; min-height: calc(100dvh - 20px); }
+body.is-playing.large-text .board-stage { min-height: 200px; }

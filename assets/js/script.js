@@ -5,10 +5,6 @@ const ui = {
   startScreen: document.getElementById("startScreen"),
   gameScreen: document.getElementById("gameScreen"),
   playButton: document.getElementById("playButton"),
-  playerNameDisplay: document.getElementById("playerNameDisplay"),
-  playerClassDisplay: document.getElementById("playerClassDisplay"),
-  phaseNameLabel: document.getElementById("phaseNameLabel"),
-  phaseGoalLabel: document.getElementById("phaseGoalLabel"),
   resumeButton: document.getElementById("resumeButton"),
   phaseLabel: document.getElementById("phaseLabel"),
   componentLabel: document.getElementById("componentLabel"),
@@ -363,10 +359,6 @@ function updatePhaseUI() {
   const phase = data.metadata.phases[currentLevel];
   ui.phaseLabel.textContent = `Fase: ${currentLevel + 1}/${data.metadata.phases.length}`;
   ui.componentLabel.textContent = `${phase.component} · ${phase.goal}`;
-  ui.phaseNameLabel.textContent = `${phase.name}`;
-  ui.phaseGoalLabel.textContent = phase.goal;
-  ui.playerNameDisplay.textContent = `Componente: ${phase.component}`;
-  ui.playerClassDisplay.textContent = `${phase.name}. ${phase.goal}`;
 }
 
 function saveProgress() {
@@ -450,6 +442,7 @@ function startGame(diff) {
 
   ui.startScreen.hidden = true;
   ui.gameScreen.hidden = false;
+  document.body.classList.add("is-playing");
   currentDiff = diff;
   currentLevel = 0;
   rawScore = 0;
@@ -509,6 +502,7 @@ function returnToMenu() {
   ui.victoryModal.close();
   ui.startScreen.hidden = false;
   ui.gameScreen.hidden = true;
+  document.body.classList.remove("is-playing");
   document.getElementById("settingsGameControls").hidden = true;
   ui.playButton.focus();
   isPaused = true;
@@ -519,10 +513,6 @@ function returnToMenu() {
   checkSavedProgress();
   ui.phaseLabel.textContent = "Fase: -";
   ui.componentLabel.textContent = "Componente: -";
-  ui.playerNameDisplay.textContent = "Componente: -";
-  ui.playerClassDisplay.textContent = "Escolha uma dificuldade.";
-  ui.phaseNameLabel.textContent = "Aguardando início";
-  ui.phaseGoalLabel.textContent = "Escolha uma dificuldade para começar.";
   ui.statusText.textContent = "Escolha uma dificuldade para começar outra partida.";
   updateDifficultyButtons();
 }
@@ -1062,10 +1052,9 @@ function attachEvents() {
     currentUser = { ra: "PACOTE DE DADOS", turma: "Fluxo da informação", idade: null };
     bestScore = Number(localStorage.getItem(recordKey) || 0);
     ui.bestScore.textContent = bestScore;
-    ui.playerNameDisplay.textContent = "Componente: -";
-    ui.playerClassDisplay.textContent = "Escolha uma dificuldade.";
     ui.startScreen.hidden = true;
     ui.gameScreen.hidden = false;
+    document.body.classList.add("is-playing");
     document.getElementById("settingsGameControls").hidden = false;
     startAmbientMusic();
     checkSavedProgress();
@@ -1085,6 +1074,7 @@ function attachEvents() {
     openOverlay(ui.tutorialModal);
   });
   settingsButton.addEventListener("click", () => openOverlay(settingsModal));
+  document.getElementById("startSettingsButton").addEventListener("click", () => openOverlay(settingsModal));
   document.querySelectorAll("[data-close]").forEach((button) => {
     button.addEventListener("click", () => document.getElementById(button.dataset.close).close());
   });
