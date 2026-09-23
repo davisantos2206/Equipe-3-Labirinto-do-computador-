@@ -23,7 +23,7 @@ Para abrir por servidor local, use `http://localhost:4173`. Alguns navegadores b
 
 O jogo começa em uma tela gamificada com o botão `Jogar`, sem login. Ao entrar, um tutorial visual abre automaticamente com cartões, representação das setas do teclado, tecla Enter e o fluxo Entrada → CPU → Memória → Saída. Depois do botão `Entendi`, o jogo abre uma tela de escolha de dificuldade.
 
-Cada fase mostra claramente onde o jogador está, tanto no painel lateral quanto dentro do canvas:
+A faixa dentro do labirinto identifica a fase e o componente. O botão `Ler fase em voz alta`, à direita, lê também o objetivo educativo:
 
 - Entrada de Dados: Teclado.
 - Processamento: CPU.
@@ -69,7 +69,7 @@ A barra `Configurações e acessibilidade` abre um diálogo com alto contraste, 
 
 O jogo inclui link para pular ao conteúdo, foco visível, diálogos nomeados e estados selecionados anunciados. A descrição textual do labirinto informa linha, coluna, caminhos livres, destino e colisões em uma região `aria-live`. O modo por passos permite explorar os caminhos usando um dedo e acompanhar cada mudança com um leitor de tela. O canvas possui descrição associada a essa região.
 
-O alto contraste também se aplica ao canvas: paredes brancas sólidas, caminhos pretos, destino identificado e pacote com desenho próprio. Respostas certas e erradas têm rótulos escritos e símbolos, além das cores. Os controles de toque medem 56 × 56 pixels CSS. Os diálogos rolam internamente em telas pequenas e o fechamento das configurações permanece acessível no cabeçalho.
+O alto contraste também se aplica ao canvas: paredes brancas sólidas, caminhos pretos, destino identificado e pacote com desenho próprio. Respostas certas e erradas têm rótulos escritos e símbolos, além das cores. Os controles de toque medem 56 × 56 pixels CSS no desktop e pelo menos 44 × 44 em telas compactas. Os diálogos rolam internamente em telas pequenas e o fechamento das configurações permanece acessível no cabeçalho.
 
 As preferências são validadas e salvas em `localStorage`, na chave `labirinto_acessibilidade_v1`. Sem preferência salva, a redução de movimento respeita `prefers-reduced-motion`. A gravação das preferências pode falhar sem interromper o jogo. Não há API, autenticação ou banco de dados neste projeto estático.
 
@@ -90,6 +90,27 @@ O Manual de Padronização de Jogos e a Proposta de Jogo Educativo Interativo fo
 Validações executadas: sintaxe JavaScript; verificação de espaços no diff; teste da lógica nas 12 combinações de mapa e dificuldade, com colisão, 36 respostas corretas e envio único de pontuação por partida; partida completa no Chrome pelo teclado (4 fases, 12 perguntas, 8 acertos = 67 pontos); persistência de preferências após recarregar; navegação de slider por teclado; foco ao fechar configurações; telas de 320, 390 e 844 pixels, incluindo texto ampliado e alto contraste.
 
 Limites da validação: não foi realizada homologação com NVDA/VoiceOver, Lighthouse, simuladores de daltonismo ou dispositivos físicos. A revisão de semântica e os testes no navegador não equivalem à certificação integral de acessibilidade exigida pelos critérios do Azure. Os itens do Azure não foram alterados para concluídos.
+
+## Revisão de 23/09/2026
+
+- Cegueira: passos por casa, próximo passo calculado por rota livre, repetição de posição, leitura de fase e perguntas. Ativar o modo liga a voz disponível no navegador e desliga música; a voz pode ser desligada para usar um leitor de tela próprio.
+- Surdez: avisos escritos persistentes de movimento, colisão, respostas e mudança de fase. Ativar o modo desliga música, efeitos e voz; os sons podem ser ajustados separadamente depois. Não há informação educativa disponível somente por áudio.
+- Interface: removidos os cartões duplicados de fase e estado; configurações, leitura e setas ficam à direita. No celular vertical, os controles ficam na coluna direita do painel inferior. Texto ampliado e zoom preservam rolagem quando necessária, sem cortar conteúdo.
+- Trilha: composição eletrônica original em Lá menor, 96 BPM, sintetizada localmente. Música e efeitos têm controles independentes.
+
+Validação desta revisão: partida completa com orientação nos quatro componentes e 12 acertos (100/100); colisão e feedback textual com áudio desligado; preferências preservadas ao recarregar; orientação testada nos 12 mapas sem atravessar paredes; início e interrupção da trilha testados com contexto de áudio simulado; layout sem rolagem em 1280×720, 390×844 e 844×390. A emissão de voz usa as vozes do navegador; não houve homologação com NVDA/VoiceOver ou usuários.
+
+Rastreabilidade no Azure (links do tipo **GitHub Commit** nas próprias Tasks):
+
+| Sprint | Tasks verificadas / atualizadas | Referência |
+| --- | --- | --- |
+| Abril | 3 — Documentação técnica | P2 `e8ebf61`, implementação posterior das normas; não há commit de Abril no histórico |
+| Maio | 7 — Tela inicial | `c618e69`, entrega denominada trabalho maio finalizado, publicada em Junho |
+| Junho | 16 — Monitor/Saída | P2 `e8ebf61` |
+| Agosto | 32, 39 e 52 | Commits 01–05; 52 contém orientação para cegueira e pertence ao PBI 44 |
+| Setembro | 36, 45, 46 e 53 | Commits a partir de 06; 53 contém avisos para surdez e pertence ao PBI 35 |
+
+Os vínculos substituídos pela renumeração foram removidos das Tasks 36, 45 e 46. As novas Tasks 52 e 53 permanecem em progresso para homologação. A tarefa de APIs/banco (48) continua fora da entrega estática.
 
 ## Tecnologias
 
