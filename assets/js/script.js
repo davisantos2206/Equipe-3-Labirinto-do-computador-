@@ -41,10 +41,14 @@ const ui = {
 const settingsModal = document.getElementById("settingsModal");
 const settingsButton = document.getElementById("settingsButton");
 const navigationStatus = document.getElementById("navigationStatus");
+const accessibility = window.LabirintoAccessibility;
+const guidanceStatus = document.getElementById("guidanceStatus");
+let lastGuidanceText = "";
+let lastOverlayTrigger = null;
 const preferenceKey = "labirinto_acessibilidade_v1";
 const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 const preferences = { contrast: false, largeText: false, reducedMotion: motionQuery.matches,
-  stepMode: false, music: true, effects: true, musicVolume: 50, effectsVolume: 50 };
+  stepMode: false, blindMode: false, narration: false, music: true, effects: true, musicVolume: 50, effectsVolume: 50 };
 try {
   const saved = JSON.parse(localStorage.getItem(preferenceKey) || "{}");
   for (const key of Object.keys(preferences)) {
@@ -493,6 +497,7 @@ function loadLevel(level) {
   levelStartedAt = Date.now();
   resetPlayer();
   updatePhaseUI();
+  guidanceStatus.textContent = "";
   announcePosition(true);
   isPaused = false;
   document.querySelector(".mobile-pad button").focus({ preventScroll: true });
@@ -532,7 +537,8 @@ function openQuiz() {
   renderQuestion();
   ui.quizModal.showModal();
   window.setTimeout(() => {
-    ui.quizOptions.children[focusedOptionIndex]?.focus({ preventScroll: true });
+    ui.quizQuestion.focus({ preventScroll: true });
+    speakQuestion();
   }, 0);
 }
 
@@ -562,6 +568,9 @@ function renderQuestion() {
   });
 
   selectQuizOption(0);
+  ui.quizQuestion.tabIndex = -1;
+  ui.quizQuestion.focus({ preventScroll: true });
+  speakQuestion();
 }
 
 function selectQuizOption(index, { keepSubmitDisabled = false } = {}) {
@@ -576,6 +585,7 @@ function selectQuizOption(index, { keepSubmitDisabled = false } = {}) {
     child.tabIndex = childIndex === focusedOptionIndex ? 0 : -1;
   });
   options[focusedOptionIndex].focus({ preventScroll: true });
+  narrate("Alternativa " + (focusedOptionIndex + 1) + ": " + options[focusedOptionIndex].textContent);
   ui.quizSubmit.disabled = keepSubmitDisabled ? true : false;
 }
 
@@ -632,6 +642,7 @@ function validateAnswer() {
   ui.quizSubmit.disabled = false;
   ui.quizSubmit.textContent = currentQuestion < 2 ? "Próximo" : "Finalizar fase";
   ui.quizSubmit.focus({ preventScroll: true });
+  narrate(ui.quizFeedback.textContent + " Selecione " + ui.quizSubmit.textContent + " para continuar.");
 }
 
 function advanceQuiz() {
@@ -675,6 +686,7 @@ function finishGame() {
   ui.statusText.textContent = `Jogo concluído com ${final} pontos.`;
   updateDifficultyButtons();
   playTone("win");
+  narrate("Pacote entregue. " + final + " pontos. " + correctCount + " respostas corretas em " + answerLog.length + ". Tempo " + ui.finalTime.textContent);
 }
 
 function renderAnswerSummary() {
@@ -749,7 +761,7 @@ function stepMovement(delta) {
     dy *= Math.SQRT1_2;
   }
 
-  if (preferences.stepMode) { player.moving = false; return; }
+  if (usesStepMovement()) { player.moving = false; return; }
   const speed = settings[currentDiff].speed;
   const nextX = player.x + dx * speed * delta;
   const nextY = player.y + dy * speed * delta;
@@ -1085,7 +1097,7 @@ function attachEvents() {
       keys.clear();
       isPaused = !gameStartedAt;
       if (dialog === ui.tutorialModal && !gameStartedAt && !ui.gameScreen.hidden) showDifficultyModal();
-      else settingsButton.focus();
+      else (lastOverlayTrigger?.isConnected && !lastOverlayTrigger.closest("dialog:not([open])") ? lastOverlayTrigger : settingsButton).focus();
     });
   }
   // Impede Escape de fechar um desafio e deixar a partida sem continuação.
@@ -1093,17 +1105,18 @@ function attachEvents() {
     dialog.addEventListener("cancel", event => event.preventDefault());
   }
   const toggles = { contrastButton: "contrast", fontButton: "largeText", motionButton: "reducedMotion",
-    stepButton: "stepMode", audioButton: "music", effectsButton: "effects" };
+    stepButton: "stepMode", blindButton: "blindMode", narrationButton: "narration", audioButton: "music", effectsButton: "effects" };
   for (const [id, key] of Object.entries(toggles)) {
     document.getElementById(id).addEventListener("click", () => {
       preferences[key] = !preferences[key];
-      if (key === "stepMode") {
+      if (key === "stepMode" || key === "blindMode") {
         player.x = (Math.floor(player.x / tileSize) + 0.5) * tileSize;
         player.y = (Math.floor(player.y / tileSize) + 0.5) * tileSize;
         keys.clear();
       }
       applyPreferences();
       savePreferences();
+      if (key === "narration" && preferences.narration) narrate("Leitura em voz alta ativada. Use Tab para navegar e Enter para acionar os controles.");
     });
   }
   for (const key of ["musicVolume", "effectsVolume"]) {
@@ -1116,7 +1129,19 @@ function attachEvents() {
   window.addEventListener("blur", () => keys.clear());
   document.addEventListener("visibilitychange", () => keys.clear());
 
+  document.getElementById("positionButton").addEventListener("click", () => { announcePosition(true); publishGuidance(navigationStatus.textContent); });
+  document.getElementById("guideButton").addEventListener("click", () => publishGuidance(routeGuidance()));
+  document.getElementById("readQuestionButton").addEventListener("click", () => {
+    ui.quizQuestion.tabIndex = -1;
+    ui.quizQuestion.focus();
+    speakQuestion();
+  });
+  document.addEventListener("focusin", event => {
+    if (!preferences.narration || event.target.closest("#quizModal")) return;
+    if (event.target.matches("button")) narrate(event.target.getAttribute("aria-label") || event.target.textContent);
+  });
   document.addEventListener("keydown", (event) => {
+    if (event.target.closest("#quizModal") && event.target.id === "readQuestionButton" && ["Enter", " "].includes(event.key)) return;
     if (handleQuizKeyboard(event)) return;
     if (handleDifficultyKeyboard(event)) return;
 
@@ -1132,7 +1157,7 @@ function attachEvents() {
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
       event.preventDefault();
       if (isPaused) return;
-      if (preferences.stepMode) {
+      if (usesStepMovement()) {
         if (!event.repeat) moveOneCell(arrowDirections[event.key]);
       } else keys.add(event.key);
     }
@@ -1151,20 +1176,20 @@ function attachEvents() {
       pressStartedAt = performance.now();
       pressCell = Math.floor(player.x / tileSize) + ":" + Math.floor(player.y / tileSize);
       button.setPointerCapture(event.pointerId);
-      if (!preferences.stepMode) keys.add(dir);
+      if (!usesStepMovement()) keys.add(dir);
     });
     const release = () => keys.delete(dir);
     for (const name of ["pointerup", "pointercancel", "lostpointercapture"]) button.addEventListener(name, release);
     button.addEventListener("click", event => {
       const sameCell = pressCell === Math.floor(player.x / tileSize) + ":" + Math.floor(player.y / tileSize);
       const quickTap = performance.now() - pressStartedAt < 200 && sameCell;
-      if (preferences.stepMode || event.detail === 0 || quickTap) moveOneCell(dir);
+      if (usesStepMovement() || event.detail === 0 || quickTap) moveOneCell(dir);
     });
     button.addEventListener("keydown", event => {
       if (arrowDirections[event.key]) {
         event.preventDefault();
         event.stopPropagation();
-        if (preferences.stepMode) {
+        if (usesStepMovement()) {
           if (!event.repeat) moveOneCell(arrowDirections[event.key]);
         } else if (!isPaused) keys.add(event.key);
       }
@@ -1181,6 +1206,7 @@ function applyPreferences() {
   document.body.classList.toggle("large-text", preferences.largeText);
   document.body.classList.toggle("reduced-motion", preferences.reducedMotion);
   const labels = {
+    blindButton: ["Navegação para pessoas cegas", preferences.blindMode], narrationButton: ["Leitura em voz alta", preferences.narration],
     contrastButton: ["Alto contraste", preferences.contrast], fontButton: ["Texto ampliado", preferences.largeText],
     motionButton: ["Reduzir animações", preferences.reducedMotion], stepButton: ["Movimento por passos", preferences.stepMode],
     audioButton: ["Música", preferences.music], effectsButton: ["Efeitos sonoros", preferences.effects]
@@ -1190,6 +1216,9 @@ function applyPreferences() {
     button.textContent = label + ": " + (enabled ? "ativado" : "desativado");
     button.setAttribute("aria-pressed", String(enabled));
   }
+  if (!preferences.narration) accessibility.stopSpeech();
+  navigationStatus.setAttribute("aria-live", preferences.narration ? "off" : "polite");
+  guidanceStatus.setAttribute("aria-live", preferences.narration ? "off" : "polite");
   audioEnabled = preferences.music;
   if (!audioEnabled) stopAmbientMusic();
   else startAmbientMusic();
@@ -1201,6 +1230,7 @@ function applyPreferences() {
 }
 
 function openOverlay(dialog) {
+  lastOverlayTrigger = document.activeElement;
   keys.clear();
   isPaused = true;
   if (gameStartedAt && !overlayPausedAt) overlayPausedAt = Date.now();
@@ -1221,7 +1251,8 @@ function announcePosition(force = false, prefix = "") {
   const goalCol = map[goalRow].indexOf(9);
   navigationStatus.textContent = prefix + "Pacote: linha " + (row + 1) + ", coluna " + (col + 1) +
     ". Caminhos livres: " + free.join(", ") + ". Destino: " + data.metadata.phases[currentLevel].component +
-    ", linha " + (goalRow + 1) + ", coluna " + (goalCol + 1) + ".";
+    ", linha " + (goalRow + 1) + ", coluna " + (goalCol + 1) + "." + (preferences.blindMode ? " " + routeGuidance() : "");
+  narrate(navigationStatus.textContent);
 }
 
 function moveOneCell(dir) {
@@ -1241,10 +1272,33 @@ function moveOneCell(dir) {
   if (cellAt(x, y) === 9) openQuiz();
 }
 
+function usesStepMovement() { return preferences.stepMode || preferences.blindMode; }
+function narrate(text) { if (preferences.narration) accessibility.speak(text); }
+function routeGuidance() {
+  if (!gameStartedAt) return "Inicie uma partida para receber orientação.";
+  return accessibility.guide(data?.maps?.[currentDiff]?.[currentLevel], Math.floor(player.x / tileSize), Math.floor(player.y / tileSize));
+}
+function publishGuidance(text) {
+  lastGuidanceText = text;
+  guidanceStatus.textContent = "";
+  requestAnimationFrame(() => { guidanceStatus.textContent = lastGuidanceText; });
+  narrate(text);
+}
+function speakQuestion() {
+  const question = data?.quizzes?.[currentDiff]?.[currentLevel]?.[currentQuestion];
+  if (!question) return;
+  narrate(ui.quizStep.textContent + ". " + question.question + ". " + question.options.map((option, index) => "Alternativa " + (index + 1) + ": " + option).join(". ") + ". Use as setas para escolher e Enter para responder.");
+}
+
 async function init() {
   document.getElementById("settingsGameControls").appendChild(document.getElementById("difficultyControls"));
   document.getElementById("settingsGameControls").hidden = ui.gameScreen.hidden;
   attachEvents();
+  if (!accessibility.speechSupported()) {
+    preferences.narration = false;
+    document.getElementById("narrationButton").disabled = true;
+    document.getElementById("narrationHelp").textContent = "Este navegador não oferece leitura em voz alta. As descrições permanecem disponíveis para leitores de tela.";
+  }
   applyPreferences();
   try {
     await loadGameData();

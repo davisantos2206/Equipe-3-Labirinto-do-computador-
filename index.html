@@ -49,6 +49,11 @@
         <div class="canvas-wrap">
           <canvas id="canvas" width="960" height="640" role="img" aria-label="Labirinto em formato de placa de computador" aria-describedby="navigationStatus"></canvas>
           <p id="navigationStatus" class="navigation-status" role="status" aria-live="polite" aria-atomic="true">Use as setas ou os botões para mover o pacote.</p>
+          <div class="navigation-tools" aria-label="Orientação no labirinto">
+            <button id="positionButton" class="secondary-action" type="button">Repetir posição</button>
+            <button id="guideButton" class="secondary-action" type="button">Orientar próximo passo</button>
+          </div>
+          <p id="guidanceStatus" class="navigation-status" role="status" aria-live="polite" aria-atomic="true"></p>
           <div class="mobile-pad" aria-label="Controles de movimento">
             <button type="button" data-dir="up" aria-label="Mover para cima">▲</button>
             <button type="button" data-dir="left" aria-label="Mover para esquerda">◀</button>
@@ -102,6 +107,10 @@
     </div>
     <p>Ajuste o jogo do seu jeito. Suas preferências ficam salvas neste navegador.</p>
     <div class="settings-options">
+      <button id="blindButton" class="secondary-action" type="button" aria-pressed="false">Navegação para pessoas cegas</button>
+      <p>Ativa passos por casa e orientação textual até o componente. Use com seu leitor de tela ou com a leitura em voz alta do jogo.</p>
+      <button id="narrationButton" class="secondary-action" type="button" aria-pressed="false">Leitura em voz alta</button>
+      <p id="narrationHelp">A voz é opcional. Se já usa um leitor de tela, mantenha a voz do jogo desativada para evitar duas leituras ao mesmo tempo.</p>
       <button id="contrastButton" class="secondary-action" type="button" aria-pressed="false">Alto contraste</button>
       <button id="fontButton" class="secondary-action" type="button" aria-pressed="false">Texto ampliado</button>
       <button id="motionButton" class="secondary-action" type="button" aria-pressed="false">Reduzir animações</button>
@@ -179,6 +188,7 @@
     <p id="quizStep" class="kicker">Desafio</p>
     <h2 id="quizTitle">Componente</h2>
     <p id="quizQuestion"></p>
+    <button id="readQuestionButton" class="secondary-action" type="button">Repetir pergunta e alternativas</button>
     <div id="quizOptions" class="option-list"></div>
     <p id="quizFeedback" class="feedback" aria-live="polite"></p>
     <button id="quizSubmit" class="primary-action" type="button" disabled>Responder</button>
@@ -201,6 +211,7 @@
   </dialog>
 
   <script src="assets/data/dados.js"></script>
+  <script src="assets/js/accessibility.js"></script>
   <script src="assets/js/script.js"></script>
 </body>
 </html>

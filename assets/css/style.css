@@ -888,3 +888,7 @@ kbd {
   .settings-heading h2 { font-size: 1.15em; overflow-wrap: normal; }
   .settings-heading button { width: 100%; }
 }
+
+.navigation-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.navigation-tools button, #readQuestionButton { min-height: 44px; padding: 8px 12px; }
+.settings-options button:disabled { opacity: .65; cursor: not-allowed; }
