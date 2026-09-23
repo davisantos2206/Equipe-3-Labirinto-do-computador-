@@ -963,3 +963,12 @@ body.is-playing.large-text .board-stage { min-height: 200px; }
   .play-controls .mobile-pad { grid-template-areas: ". up ." "left down right"; grid-template-columns: repeat(3, 44px); gap: 3px; }
   .play-controls .mobile-pad button { width: 44px; height: 44px; }
 }
+/* Aproveita a janela e amplia o tabuleiro sem deformar as casas. */
+body.is-playing .app-shell { width: calc(100% - 24px); }
+body.is-playing:not(.large-text) .board-stage { container-type: size; }
+body.is-playing:not(.large-text) .board-stage canvas { width: min(100cqw, 150cqh); height: auto; }
+.play-controls .mobile-pad { align-self: center; }
+.play-controls .mobile-pad button { display: grid; place-items: center; padding: 0; line-height: 1; }
+@media (min-width: 701px) and (min-height: 500px) {
+  .side-panel { align-content: center; }
+}
