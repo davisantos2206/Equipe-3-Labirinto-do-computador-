@@ -55,6 +55,7 @@
             <button id="positionButton" class="secondary-action" type="button">Repetir posição</button>
             <button id="guideButton" class="secondary-action" type="button">Orientar próximo passo</button>
           </div>
+          <p id="eventCaption" class="event-caption" hidden>Jogo sem pistas sonoras obrigatórias. Os eventos aparecem aqui.</p>
           <p id="guidanceStatus" class="navigation-status" role="status" aria-live="polite" aria-atomic="true"></p>
           <div class="mobile-pad" aria-label="Controles de movimento">
             <button type="button" data-dir="up" aria-label="Mover para cima">▲</button>
@@ -104,6 +105,8 @@
       <p>Ativa passos por casa, orientação de caminho e voz do jogo quando disponível. A música é desligada para facilitar a escuta. Se usa leitor de tela, pode desligar a voz do jogo abaixo.</p>
       <button id="narrationButton" class="secondary-action" type="button" aria-pressed="false">Leitura em voz alta</button>
       <p id="narrationHelp">A voz é opcional. Se já usa um leitor de tela, mantenha a voz do jogo desativada para evitar duas leituras ao mesmo tempo.</p>
+      <button id="deafButton" class="secondary-action" type="button" aria-pressed="false">Avisos visuais para pessoas surdas</button>
+      <p>Mostra movimento, paredes, acertos e erros por escrito. Ao ativar, desliga música, efeitos e voz. Você pode ajustar os sons separadamente depois. Perguntas e instruções sempre estão disponíveis em texto.</p>
       <button id="contrastButton" class="secondary-action" type="button" aria-pressed="false">Alto contraste</button>
       <button id="fontButton" class="secondary-action" type="button" aria-pressed="false">Texto ampliado</button>
       <button id="motionButton" class="secondary-action" type="button" aria-pressed="false">Reduzir animações</button>

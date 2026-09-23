@@ -938,3 +938,5 @@ body.is-playing .play-area { flex: 1; min-height: 0; grid-template-columns: minm
 body.is-playing.large-text .app-shell { height: auto; min-height: 100dvh; }
 body.is-playing.large-text .game-layout { height: auto; min-height: calc(100dvh - 20px); }
 body.is-playing.large-text .board-stage { min-height: 200px; }
+
+.event-caption { margin: 0; padding: 8px 12px; border: 2px solid var(--accent, #5ff5dd); font-weight: 700; flex: 0 0 auto; }

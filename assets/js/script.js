@@ -44,7 +44,7 @@ let lastOverlayTrigger = null;
 const preferenceKey = "labirinto_acessibilidade_v1";
 const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 const preferences = { contrast: false, largeText: false, reducedMotion: motionQuery.matches,
-  stepMode: false, blindMode: false, narration: false, music: true, effects: true, musicVolume: 50, effectsVolume: 50 };
+  stepMode: false, blindMode: false, deafMode: false, narration: false, music: true, effects: true, musicVolume: 50, effectsVolume: 50 };
 try {
   const saved = JSON.parse(localStorage.getItem(preferenceKey) || "{}");
   for (const key of Object.keys(preferences)) {
@@ -288,6 +288,8 @@ function stopAmbientMusic() {
 }
 
 function playTone(type) {
+  const captions = { move: "→ Pacote em movimento.", hit: "Parede: escolha outro caminho.", ok: "Resposta correta!", wrong: "Resposta incorreta. Leia a explicação para aprender.", win: "Percurso concluído! Confira seu resultado." };
+  document.getElementById("eventCaption").textContent = captions[type] || "";
   if (!preferences.effects || !preferences.effectsVolume) return;
 
   try {
@@ -518,6 +520,7 @@ function returnToMenu() {
 }
 
 function openQuiz() {
+  document.getElementById("eventCaption").textContent = "Componente alcançado. Responda às perguntas para continuar.";
   isPaused = true;
   keys.clear();
   currentQuestion = 0;
@@ -1095,7 +1098,7 @@ function attachEvents() {
     dialog.addEventListener("cancel", event => event.preventDefault());
   }
   const toggles = { contrastButton: "contrast", fontButton: "largeText", motionButton: "reducedMotion",
-    stepButton: "stepMode", blindButton: "blindMode", narrationButton: "narration", audioButton: "music", effectsButton: "effects" };
+    stepButton: "stepMode", blindButton: "blindMode", deafButton: "deafMode", narrationButton: "narration", audioButton: "music", effectsButton: "effects" };
   for (const [id, key] of Object.entries(toggles)) {
     document.getElementById(id).addEventListener("click", () => {
       preferences[key] = !preferences[key];
@@ -1103,6 +1106,11 @@ function attachEvents() {
         player.x = (Math.floor(player.x / tileSize) + 0.5) * tileSize;
         player.y = (Math.floor(player.y / tileSize) + 0.5) * tileSize;
         keys.clear();
+      }
+      if (key === "deafMode" && preferences.deafMode) {
+        preferences.music = false;
+        preferences.effects = false;
+        preferences.narration = false;
       }
       if (key === "blindMode" && preferences.blindMode) {
         preferences.narration = accessibility.speechSupported();
@@ -1201,6 +1209,7 @@ function applyPreferences() {
   document.body.classList.toggle("large-text", preferences.largeText);
   document.body.classList.toggle("reduced-motion", preferences.reducedMotion);
   const labels = {
+    deafButton: ["Avisos visuais para pessoas surdas", preferences.deafMode],
     blindButton: ["Navegação para pessoas cegas", preferences.blindMode], narrationButton: ["Leitura em voz alta", preferences.narration],
     contrastButton: ["Alto contraste", preferences.contrast], fontButton: ["Texto ampliado", preferences.largeText],
     motionButton: ["Reduzir animações", preferences.reducedMotion], stepButton: ["Movimento por passos", preferences.stepMode],
@@ -1211,6 +1220,7 @@ function applyPreferences() {
     button.textContent = label + ": " + (enabled ? "ativado" : "desativado");
     button.setAttribute("aria-pressed", String(enabled));
   }
+  document.getElementById("eventCaption").hidden = !preferences.deafMode;
   if (!preferences.narration) accessibility.stopSpeech();
   navigationStatus.setAttribute("aria-live", preferences.narration ? "off" : "polite");
   guidanceStatus.setAttribute("aria-live", preferences.narration ? "off" : "polite");
