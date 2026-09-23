@@ -93,8 +93,8 @@ Limites da validação: não foi realizada homologação com NVDA/VoiceOver, Lig
 
 ## Revisão de 23/09/2026
 
-- Cegueira: passos por casa, próximo passo calculado por rota livre, repetição de posição, leitura de fase e perguntas. Ativar o modo liga a voz disponível no navegador e desliga música; a voz pode ser desligada para usar um leitor de tela próprio.
-- Surdez: avisos escritos persistentes de movimento, colisão, respostas e mudança de fase. Ativar o modo desliga música, efeitos e voz; os sons podem ser ajustados separadamente depois. Não há informação educativa disponível somente por áudio.
+- Modo para pessoas com dificuldade visual: passos por casa, próximo passo calculado por rota livre, repetição de posição, leitura de fase e perguntas. Ativar o modo liga a voz disponível no navegador e desliga música; a voz pode ser desligada para usar um leitor de tela próprio.
+- Modo para pessoas com dificuldade auditiva: avisos escritos persistentes de movimento, colisão, respostas e mudança de fase. Ativar o modo desliga música, efeitos e voz; os sons podem ser ajustados separadamente depois. Não há informação educativa disponível somente por áudio.
 - Interface: removidos os cartões duplicados de fase e estado; configurações, leitura e setas ficam à direita. No celular vertical, os controles ficam na coluna direita do painel inferior. Texto ampliado e zoom preservam rolagem quando necessária, sem cortar conteúdo.
 - Trilha: composição eletrônica original em Lá menor, 96 BPM, sintetizada localmente. Música e efeitos têm controles independentes.
 

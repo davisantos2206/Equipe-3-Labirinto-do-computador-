@@ -984,5 +984,14 @@ body.is-playing:not(.large-text) .board-stage { contain: size; }
 }
 
 @media (min-width: 1100px) and (min-height: 700px) {
-  .side-panel .play-controls .mobile-pad { transform: translateX(20px); }
+  .side-panel .play-controls .mobile-pad { transform: none; }
+}
+
+/* Anúncios não alteram a altura da partida; o tabuleiro cede espaço ao texto. */
+.game-layout { position: relative; }
+.game-layout .sr-only { top: 0; left: 0; margin: -1px; }
+#guidanceStatus { flex: 0 0 auto; overflow-wrap: anywhere; }
+@media (min-width: 1100px) and (min-height: 700px) {
+  body.is-playing .play-area { padding-right: 24px; }
+  .side-panel { min-height: 0; }
 }

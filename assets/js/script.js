@@ -1091,7 +1091,7 @@ function attachEvents() {
       }
       applyPreferences();
       savePreferences();
-      if (key === "blindMode" && preferences.blindMode) narrate("Navegação para pessoas cegas ativada. Cada seta move uma casa. Feche as configurações e use Orientar próximo passo para ouvir o caminho. Se usa leitor de tela, pode desligar a voz do jogo.");
+      if (key === "blindMode" && preferences.blindMode) narrate("Modo para pessoas com dificuldade visual ativado. Cada seta move uma casa. Feche as configurações e use Orientar próximo passo para ouvir o caminho. Se usa leitor de tela, pode desligar a voz do jogo.");
       if (key === "narration" && preferences.narration) narrate("Leitura em voz alta ativada. Use Tab para navegar e Enter para acionar os controles.");
     });
   }
@@ -1187,8 +1187,8 @@ function applyPreferences() {
   document.body.classList.toggle("large-text", preferences.largeText);
   document.body.classList.toggle("reduced-motion", preferences.reducedMotion);
   const labels = {
-    deafButton: ["Avisos visuais para pessoas surdas", preferences.deafMode],
-    blindButton: ["Navegação para pessoas cegas", preferences.blindMode], narrationButton: ["Leitura em voz alta", preferences.narration],
+    deafButton: ["Modo para pessoas com dificuldade auditiva", preferences.deafMode],
+    blindButton: ["Modo para pessoas com dificuldade visual", preferences.blindMode], narrationButton: ["Leitura em voz alta", preferences.narration],
     contrastButton: ["Alto contraste", preferences.contrast], fontButton: ["Texto ampliado", preferences.largeText],
     motionButton: ["Reduzir animações", preferences.reducedMotion], stepButton: ["Movimento por passos", preferences.stepMode],
     audioButton: ["Música", preferences.music], effectsButton: ["Efeitos sonoros", preferences.effects]
