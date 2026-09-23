@@ -1104,8 +1104,13 @@ function attachEvents() {
         player.y = (Math.floor(player.y / tileSize) + 0.5) * tileSize;
         keys.clear();
       }
+      if (key === "blindMode" && preferences.blindMode) {
+        preferences.narration = accessibility.speechSupported();
+        preferences.music = false;
+      }
       applyPreferences();
       savePreferences();
+      if (key === "blindMode" && preferences.blindMode) narrate("Navegação para pessoas cegas ativada. Cada seta move uma casa. Feche as configurações e use Orientar próximo passo para ouvir o caminho. Se usa leitor de tela, pode desligar a voz do jogo.");
       if (key === "narration" && preferences.narration) narrate("Leitura em voz alta ativada. Use Tab para navegar e Enter para acionar os controles.");
     });
   }
