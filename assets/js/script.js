@@ -1283,7 +1283,18 @@ function speakQuestion() {
   narrate(ui.quizStep.textContent + ". " + question.question + ". " + question.options.map((option, index) => "Alternativa " + (index + 1) + ": " + option).join(". ") + ". Use as setas para escolher e Enter para responder.");
 }
 
+function fitBoardToStage() {
+  const stage = document.querySelector(".board-stage");
+  const width = stage.clientWidth;
+  const height = stage.clientHeight;
+  if (!width || !height) return;
+  const scale = Math.min(width / canvas.width, height / canvas.height);
+  canvas.style.width = Math.floor(canvas.width * scale) + "px";
+  canvas.style.height = Math.floor(canvas.height * scale) + "px";
+}
+
 async function init() {
+  new ResizeObserver(fitBoardToStage).observe(document.querySelector(".board-stage"));
   document.getElementById("settingsGameControls").appendChild(document.getElementById("difficultyControls"));
   document.getElementById("settingsGameControls").hidden = ui.gameScreen.hidden;
   attachEvents();

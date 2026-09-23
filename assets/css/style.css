@@ -965,10 +965,20 @@ body.is-playing.large-text .board-stage { min-height: 200px; }
 }
 /* Aproveita a janela e amplia o tabuleiro sem deformar as casas. */
 body.is-playing .app-shell { width: calc(100% - 24px); }
-body.is-playing:not(.large-text) .board-stage { container-type: size; }
-body.is-playing:not(.large-text) .board-stage canvas { width: min(100cqw, 150cqh); height: auto; }
+body.is-playing:not(.large-text) .board-stage { contain: size; }
+
 .play-controls .mobile-pad { align-self: center; }
 .play-controls .mobile-pad button { display: grid; place-items: center; padding: 0; line-height: 1; }
 @media (min-width: 701px) and (min-height: 500px) {
   .side-panel { align-content: center; }
+}
+
+/* O painel acompanha a escala do tabuleiro em monitores grandes. */
+@media (min-width: 1100px) and (min-height: 700px) {
+  body.is-playing .play-area { grid-template-columns: minmax(0, 1fr) clamp(280px, 19vw, 360px); gap: 20px; }
+  .side-panel { font-size: clamp(16px, 1.05vw, 20px); gap: 14px; }
+  .side-panel .settings-bar { text-align: center; justify-content: center; min-height: 64px; }
+  .side-panel .navigation-tools button { font-size: .95em; min-height: 54px; }
+  .side-panel .mobile-pad { grid-template-columns: repeat(3, clamp(64px, 4.6vw, 88px)); gap: 8px; }
+  .side-panel .mobile-pad button { width: clamp(64px, 4.6vw, 88px); height: clamp(64px, 4.6vw, 88px); font-size: clamp(26px, 2vw, 36px); }
 }
