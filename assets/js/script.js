@@ -200,91 +200,61 @@ function ensureAudioContext() {
   return audioContext;
 }
 
+// Composição original: arpejos eletrônicos em Lá menor, 96 BPM.
+function musicGain() { return 0.55 * preferences.musicVolume / 100 * (preferences.narration ? 0.2 : 1); }
 function startAmbientMusic() {
   if (!audioEnabled || ambientNodes) return;
-
   try {
     const context = ensureAudioContext();
     const master = context.createGain();
-    const highpass = context.createBiquadFilter();
-    const lowpass = context.createBiquadFilter();
-    const now = context.currentTime;
-
-    highpass.type = "highpass";
-    highpass.frequency.setValueAtTime(220, now);
-    lowpass.type = "lowpass";
-    lowpass.frequency.setValueAtTime(2400, now);
-    master.gain.setValueAtTime(0.84 * preferences.musicVolume / 100, now);
-
-    master.connect(highpass);
-    highpass.connect(lowpass);
-    lowpass.connect(context.destination);
-    ambientNodes = { master, highpass, lowpass };
+    master.gain.setValueAtTime(musicGain(), context.currentTime);
+    master.connect(context.destination);
+    ambientNodes = { master, voices: new Set(), next: context.currentTime };
+    ambientStep = 0;
     playAmbientNote();
-    ambientTimer = window.setInterval(playAmbientNote, 1650);
-  } catch {
-    audioEnabled = false;
-  }
+    ambientTimer = window.setInterval(playAmbientNote, 100);
+  } catch { audioEnabled = false; }
 }
-
+function synthNote(frequency, time, duration, volume, type = "triangle") {
+  const nodes = ambientNodes;
+  const oscillator = audioContext.createOscillator();
+  const envelope = audioContext.createGain();
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, time);
+  envelope.gain.setValueAtTime(0, time);
+  envelope.gain.linearRampToValueAtTime(volume, time + 0.015);
+  envelope.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+  oscillator.connect(envelope);
+  envelope.connect(nodes.master);
+  nodes.voices.add(oscillator);
+  oscillator.onended = () => { nodes.voices.delete(oscillator); oscillator.disconnect(); envelope.disconnect(); };
+  oscillator.start(time);
+  oscillator.stop(time + duration + 0.02);
+}
 function playAmbientNote() {
   if (!audioEnabled || !audioContext || audioContext.state !== "running" || !ambientNodes) return;
-
-  const pattern = [
-    392,
-    493.88,
-    null,
-    587.33,
-    659.25,
-    null,
-    523.25,
-    440,
-    null,
-    587.33,
-    493.88,
-    null
-  ];
-  const frequency = pattern[ambientStep % pattern.length];
-  ambientStep += 1;
-  if (!frequency) return;
-
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-  const now = audioContext.currentTime;
-
-  oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(frequency, now);
-  gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.028, now + 0.035);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
-  oscillator.connect(gain);
-  gain.connect(ambientNodes.master);
-  oscillator.start(now);
-  oscillator.stop(now + 0.74);
-}
-
-function stopAmbientMusic() {
-  if (!ambientNodes) return;
-
-  const nodes = ambientNodes;
-  try {
-    const now = audioContext.currentTime;
-    nodes.master.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-  } catch {}
-
-  if (ambientTimer) {
-    window.clearInterval(ambientTimer);
-    ambientTimer = null;
+  const chords = [[220,261.63,329.63],[174.61,220,261.63],[130.81,164.81,196],[196,246.94,293.66]];
+  if (ambientNodes.next < audioContext.currentTime - 0.4) ambientNodes.next = audioContext.currentTime;
+  while (ambientNodes.next < audioContext.currentTime + 0.15) {
+    const chord = chords[Math.floor(ambientStep / 8) % chords.length];
+    const beat = ambientStep % 8;
+    const time = ambientNodes.next;
+    synthNote(chord[[0,1,2,1,0,2,1,2][beat]] * 2, time, 0.24, 0.13, "sine");
+    if (beat % 2 === 0) synthNote(chord[0] / 2, time, 0.48, 0.18);
+    if (beat === 0 || beat === 4) synthNote(65.4, time, 0.11, 0.2, "sine");
+    ambientStep++;
+    ambientNodes.next += 60 / 96 / 2;
   }
+}
+function stopAmbientMusic() {
+  if (ambientTimer) window.clearInterval(ambientTimer);
+  ambientTimer = null;
+  const nodes = ambientNodes;
   ambientNodes = null;
-
-  window.setTimeout(() => {
-    try {
-      nodes.master.disconnect();
-      nodes.highpass.disconnect();
-      nodes.lowpass.disconnect();
-    } catch {}
-  }, 220);
+  if (!nodes) return;
+  nodes.master.gain.setValueAtTime(0, audioContext.currentTime);
+  for (const voice of nodes.voices) { try { voice.stop(); } catch {} }
+  nodes.master.disconnect();
 }
 
 function playTone(type) {
@@ -1227,7 +1197,7 @@ function applyPreferences() {
   audioEnabled = preferences.music;
   if (!audioEnabled) stopAmbientMusic();
   else startAmbientMusic();
-  if (ambientNodes) ambientNodes.master.gain.setValueAtTime(0.84 * preferences.musicVolume / 100, audioContext.currentTime);
+  if (ambientNodes) ambientNodes.master.gain.setValueAtTime(musicGain(), audioContext.currentTime);
   for (const key of ["musicVolume", "effectsVolume"]) {
     document.getElementById(key).value = preferences[key];
     document.getElementById(key).setAttribute("aria-valuetext", preferences[key] + "%");
