@@ -1227,6 +1227,10 @@ function announcePosition(force = false, prefix = "") {
   navigationStatus.textContent = prefix + "Pacote: linha " + (row + 1) + ", coluna " + (col + 1) +
     ". Caminhos livres: " + free.join(", ") + ". Destino: " + data.metadata.phases[currentLevel].component +
     ", linha " + (goalRow + 1) + ", coluna " + (goalCol + 1) + "." + (preferences.blindMode ? " " + routeGuidance() : "");
+  if (guidanceStatus.textContent) {
+    lastGuidanceText = routeGuidance();
+    guidanceStatus.textContent = lastGuidanceText;
+  }
   narrate(navigationStatus.textContent);
 }
 
