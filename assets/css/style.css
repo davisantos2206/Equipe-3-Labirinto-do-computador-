@@ -982,3 +982,7 @@ body.is-playing:not(.large-text) .board-stage { contain: size; }
   .side-panel .mobile-pad { grid-template-columns: repeat(3, clamp(64px, 4.6vw, 88px)); gap: 8px; }
   .side-panel .mobile-pad button { width: clamp(64px, 4.6vw, 88px); height: clamp(64px, 4.6vw, 88px); font-size: clamp(26px, 2vw, 36px); }
 }
+
+@media (min-width: 1100px) and (min-height: 700px) {
+  .side-panel .play-controls .mobile-pad { transform: translateX(20px); }
+}
